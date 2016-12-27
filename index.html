@@ -1,0 +1,47 @@
+<! DOCTYPE html>
+<html lang="en" ng-app="furgatTeamDigest">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Digest | Version 1.0.Absol </title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <script src="js/teamgen.js"></script>
+</head>
+<body>
+    <div ng-controller="teamdigest">
+        <div id="team">
+            <h1>TEAM:</h1>
+            <div id="teamdata">
+                <div class="pokemon" ng-repeat="member in team">
+                    <p>
+                        <input type="button" value="X" ng-click="removeMember()">
+                    </p>
+                    <p>
+                        {{member.name}},<br>
+                        {{member.type[0]}}, {{member.type[1]}}<br>
+                        {{member.offensive_matchups}}<br>
+                        {{member.defensive_matchups}}<br>
+                        {{member.net_matchups}}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="prospects">
+            <h1>SCRATCHBOARD:</h1>
+            <div id="data">
+                <h2>SEARCH:</h2>
+                <div id="form">
+                    <input type="text" ng-keyup="typeEnter()" ng-model="searchtype">
+                    <input type="button" value="GO" ng-click="dexRequest()">
+                    <div ng-bind="status"></div>
+                </div>
+                <div id="data">
+                    <p class="datamon" ng-repeat="mon in pokebase">
+                        <input type="button" data="{{ mon.pokemon.name }}" value="{{ mon.pokemon.name }}" ng-click="add($event)">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
