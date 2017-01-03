@@ -1,4 +1,9 @@
 .datamon { float: left; padding: 0.25em; margin: 0.25em; }
 
 #teamdata { overflow: auto; }
-.pokemon, .pokemon p { float: left; padding: 0.25em; margin: 0.25em; }
+.pokemon, .pokemon p { padding: 0.1em; margin: 0.1em; }
+
+div.columned h3, div.columned p { display: block; clear: both; }
+div.columned span { overflow: auto; }
+div.columned ul { list-style: none; }
+div.columned li { display: block; padding: 0.25em; float: left; }

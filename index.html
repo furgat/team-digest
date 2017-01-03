@@ -14,15 +14,167 @@
             <div id="teamdata">
                 <div class="pokemon" ng-repeat="member in team">
                     <p>
-                        <input type="button" value="X" ng-click="removeMember()">
+                        <button ng-click="removeMember($index)">X</button>
+                        <button ng-click="addMove($index)">Add Move</button>
                     </p>
                     <p>
-                        {{member.name}},<br>
-                        {{member.type[0]}}, {{member.type[1]}}<br>
-                        {{member.offensive_matchups}}<br>
-                        {{member.defensive_matchups}}<br>
-                        {{member.net_matchups}}
+                        {{member.name}}, [ {{member.type[0]}}, {{member.type[1]}} ]
                     </p>
+                    <p>
+                        <ul>
+                            <li ng-repeat="move in member.moves track by $index">
+                                {{move.name}} : {{move.type}} :: {{move.damaging}}
+                            </li>
+                        </ul>
+                    </p>
+                    <div class="columned">
+                        <h3>
+                            Offensive Matchups:
+                        </h3>
+                        
+                        <p>
+                            Vulnerable:
+                        </p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.offensive_matchups track by $index" 
+                                    ng-if="matchup >= 200"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>
+                            Neutral:
+                        </p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.offensive_matchups track by $index" 
+                                    ng-if="100 <= matchup && matchup < 200"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>
+                            Reisisted:
+                        </p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.offensive_matchups track by $index" 
+                                    ng-if="matchup < 100" 
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        
+                        <h3>Defensive Matchups:</h3>
+                        
+                        <p>Vulnerable:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.defensive_matchups track by $index" 
+                                    ng-if="matchup > 100"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>Neutral:</p>
+                        <span>
+                            <ul> Neutral:
+                                <li 
+                                    ng-repeat="matchup in member.defensive_matchups track by $index" 
+                                    ng-if="matchup == 100"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>Resisted:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.defensive_matchups track by $index" 
+                                    ng-if="matchup < 100" 
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        
+                        <h3>Net Matchups:</h3>
+                        <p>Easy Prey:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.net_matchups track by $index" 
+                                    ng-if="matchup >= 200"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                            </span>
+                        
+                        <p>Advantageous:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.net_matchups track by $index" 
+                                    ng-if="100<= matchup && matchup < 200"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>Evenly Matched:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.net_matchups track by $index" 
+                                    ng-if="0 <= matchup && matchup < 100" 
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>Reconsider:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.net_matchups track by $index" 
+                                    ng-if="-100 <= matchup && matchup < 0"
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                        
+                        <p>ABORT MISSION:</p>
+                        <span>
+                            <ul>
+                                <li 
+                                    ng-repeat="matchup in member.net_matchups track by $index" 
+                                    ng-if="matchup < -100" 
+                                >
+                                    {{ '[' + typeName($index) + ' : ' + matchup + ']' }}
+                                </li>
+                            </ul>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -37,7 +189,7 @@
                 </div>
                 <div id="data">
                     <p class="datamon" ng-repeat="mon in pokebase">
-                        <input type="button" data="{{ mon.pokemon.name }}" value="{{ mon.pokemon.name }}" ng-click="add($event)">
+                        <input type="button" data="{{ mon.pokemon.name }}" value="{{ mon.pokemon.name }}" ng-click="addMon($event)">
                     </p>
                 </div>
             </div>
