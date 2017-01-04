@@ -1,4 +1,4 @@
-var application = angular.module('furgatTeamDigest', []);
+var application = angular.module('furgatTeamDigest', ['ui.bootstrap', 'cgPrompt']);
 
 // constant orders
 // stats: [hp, attack, defense, sp.atk, sp.def, speed]
@@ -181,12 +181,16 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
             
             $scope.pokebase = [];
             // find get string based on search box configuration
-            $http.get('http://pokeapi.co/api/v2/type/' + $scope.searchtype) // get
-            .success(function(response) {
+            $http({
+                method: 'GET',
+                url: 'http://pokeapi.co/api/v2/type/' + $scope.searchtype
+            }) // get
+            .then(function(response) {
                 $scope.status = 'Complete!';
-                $scope.pokebase = response.pokemon;
-            })
-            .error(function(response) {
+                $scope.pokebase = response.data.pokemon;
+                console.log(response.data.pokemon);
+            },
+            function(response) {
                 $scope.status = 'There was an Error,,';
             });
         } else {
@@ -207,23 +211,26 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
             var name = obj.target.attributes.data.value;
             $scope.status = 'Adding ' + name + ' to Team...';
 
-            $http.get('http://pokeapi.co/api/v2/pokemon/'+name)
-            .success(function(response){
+            $http({
+                method: 'GET',
+                url: 'http://pokeapi.co/api/v2/pokemon/'+name
+            })
+            .then(function(response){
                 // create a temporary variable to hold the JSON object for each pokemon
                 var temPoke = {
-                    'name':response.name, 
-                    'type':[],
-                    'stats':[],
-                    'moves':[],
-                    'offensive_matchups':[],
-                    'defensive_matchups':[],
-                    'net_matchups':[]
+                    name:response.data.name, 
+                    type:[],
+                    stats:[],
+                    moves:[],
+                    offensive_matchups:[],
+                    defensive_matchups:[],
+                    net_matchups:[]
                 };
-                
+
                 // reverse loop b/c order doesn't really matter here rn
                 // starts at length, i yields value before decrementing, so every index is processed
-                for (var i = response.types.length; i--; ) {
-                    temPoke.type.push(response.types[i].type.name);
+                for (var i = response.data.types.length; i--; ) {
+                    temPoke.type.push(response.data.types[i].type.name);
                 }
                 
                 // initialize type matchups to 100%
@@ -238,8 +245,8 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
                 
                 $scope.status = 'Complete!';
                 $scope.team.push(temPoke);
-            })
-            .error(function(response){
+            },
+            function(response){
                 $scope.status = 'There was an Error,,';
             });
         } else {

@@ -1,9 +1,23 @@
-.datamon { float: left; padding: 0.25em; margin: 0.25em; }
+body { padding-top: 70px; }
 
-#teamdata { overflow: auto; }
-.pokemon, .pokemon p { padding: 0.1em; margin: 0.1em; }
-
-div.columned h3, div.columned p { display: block; clear: both; }
-div.columned span { overflow: auto; }
-div.columned ul { list-style: none; }
-div.columned li { display: block; padding: 0.25em; float: left; }
+.typeicon { 
+    display: inline-block; width: 66px; height: 19px; 
+}
+.normal { background:url('../img/types.png') 0px 0px no-repeat;  }
+.fighting { background:url('../img/types.png') 0px -19px no-repeat;  }
+.poison { background:url('../img/types.png') 0px -38px no-repeat;  }
+.ground { background:url('../img/types.png') 0px -57px no-repeat;  }
+.flying { background:url('../img/types.png') 0px -76px no-repeat;  }
+.bug { background:url('../img/types.png') 0px -95px no-repeat;  }
+.rock { background:url('../img/types.png') 0px -114px no-repeat;  }
+.ghost { background:url('../img/types.png') 0px -133px no-repeat;  }
+.steel { background:url('../img/types.png') 0px -152px no-repeat;  }
+.fire { background:url('../img/types.png') -66px 0px no-repeat;  }
+.water { background:url('../img/types.png') -66px -19px no-repeat;  }
+.electric { background:url('../img/types.png') -66px -38px no-repeat;  }
+.grass { background:url('../img/types.png') -66px -57px no-repeat;  }
+.ice { background:url('../img/types.png') -66px -76px no-repeat;  }
+.psychic { background:url('../img/types.png') -66px -95px no-repeat;  }
+.dragon { background:url('../img/types.png') -66px -114px no-repeat;  }
+.dark { background:url('../img/types.png') -66px -133px no-repeat;  }
+.fairy { background:url('../img/types.png') -66px -152px no-repeat;  }
