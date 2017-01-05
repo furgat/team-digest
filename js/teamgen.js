@@ -315,7 +315,7 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
             
             $scope.team[index].offensive_matchups = typeGrid.rateOffense($scope.team[index]);
             $scope.team[index].net_matchups = $scope.netRatings($scope.team[index]);
-            $scope.teamMatchus = $scope.teamNetAverage();
+            $scope.teamMatchups = $scope.teamNetAverage();
         },
         function() {
         });
@@ -326,42 +326,44 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
     // prompts the user for some basic pokemon input and then adds to the team
     //=
     $scope.customPokemon = function() {
-        prompt({
-            title:'Add A Team Member',
-            message:'Define what sort of Pokemon you would like to add:',
-            inputs:[
-                {
-                    name:'name',
-                    label:'Name',
-                    type:'text',
-                },
-                {
-                    name:'type',
-                    label:'Type 1',
-                    type:'select',
-                    values: typeGrid.typeEnum
-                },
-                {
-                    name:'type2',
-                    label:'Type 2',
-                    type:'select',
-                    required:false,
-                    values: typeGrid.typeEnum
-                }
-            ]
-        })
-        .then(function(results) { 
-            console.log(results);
-            
-            var typingTemp = [];
-            
-            if (results.type != '' && results.type != undefined) typingTemp.push(results.type);
-            if (results.type2 != '' && results.type2 != undefined) typingTemp.push(results.type2);
-            
-            $scope.catchMon({name:results.name, typing:typingTemp});
-        },
-        function() {
-        });
+        if ($scope.team.length < $scope.teamCap) {
+            prompt({
+                title:'Add A Team Member',
+                message:'Define what sort of Pokemon you would like to add:',
+                inputs:[
+                    {
+                        name:'name',
+                        label:'Name',
+                        type:'text',
+                    },
+                    {
+                        name:'type',
+                        label:'Type 1',
+                        type:'select',
+                        values: typeGrid.typeEnum
+                    },
+                    {
+                        name:'type2',
+                        label:'Type 2',
+                        type:'select',
+                        required:false,
+                        values: typeGrid.typeEnum
+                    }
+                ]
+            })
+            .then(function(results) { 
+                console.log(results);
+
+                var typingTemp = [];
+
+                if (results.type != '' && results.type != undefined) typingTemp.push(results.type);
+                if (results.type2 != '' && results.type2 != undefined) typingTemp.push(results.type2);
+
+                $scope.catchMon({name:results.name, typing:typingTemp});
+            },
+            function() {
+            });
+        }
     };
     
     //=
@@ -387,7 +389,8 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
         var tempNet = [];
         var teamLength = $scope.team.length;
         
-        for (var n = $scope.team[i].net_matchups.length; n--; ) {
+        for (var n = typeGrid.typeEnum.length; n--; ) {
+            tempNet[n] = 0;
             for(var i = teamLength; i--; ) {
                 tempNet[n] += $scope.team[i].net_matchups[n];    
             }
