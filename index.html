@@ -12,9 +12,9 @@
     
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
-    <script src="bower_components/angular-prompt/angular-prompt.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script> 
     
+    <script src="js/flexmodal.js"></script>
     <script src="js/teamgen.js"></script>
 </head>
 <body ng-controller="teamdigest">
@@ -25,14 +25,14 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href>FIND MON</a></li>
-                    <li><a href>ADD NEW MON</a></li>
+                    <li><a href ng-click="">FIND MON</a></li>
+                    <li><a href ng-click="customPokemon()">ADD NEW MON</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     
-    <div class="container">
+    <div>
         <div id="options" class="col-sm-3">
                 <h2>SEARCH:</h2>
                 <div id="form">
@@ -42,14 +42,14 @@
                 </div>
                 <div id="data">
                     <p class="datamon" ng-repeat="mon in pokebase">
-                        <input type="button" data="{{ mon.pokemon.name }}" value="{{ mon.pokemon.name }}" ng-click="addMon($event)">
+                        <input type="button" data="{{ mon.pokemon.name }}" value="{{ mon.pokemon.name }}" ng-click="addApiMon($event)">
                     </p>
                 </div>
         </div>
         <div id="team" class="col-sm-9">
             <h1>TEAM:</h1>
             <div id="teamdata">
-                <div class="pokemon col-sm-3" ng-repeat="member in team">
+                <div class="pokemon col-sm-2" ng-repeat="member in team">
                     <p>
                         <button ng-click="removeMember($index)">X</button>
                         <button ng-click="addMove($index)">Add Move</button>
@@ -186,6 +186,53 @@
                         </span>
                     </div>
                 </div>
+            </div>
+            <div class="col-sm-9">
+                <h3>Net Matchups:</h3>
+                <p>Easy Prey:</p>
+                <span>
+                    <span 
+                        ng-repeat="matchup in teamMatchups track by $index" 
+                        ng-if="matchup >= 200"
+                        class="typeicon {{ typeName($index) }}">
+                    </span>
+                </span>
+                    
+                <p>Advantageous:</p>
+                <span>
+                    <span 
+                        ng-repeat="matchup in teamMatchups track by $index" 
+                        ng-if="100 <= matchup && matchup < 200"
+                        class="typeicon {{ typeName($index) }}">
+                    </span>
+                </span>
+                        
+                <p>Evenly Matched:</p>
+                <span>
+                    <span 
+                        ng-repeat="matchup in teamMatchups track by $index" 
+                        ng-if="0 <= matchup && matchup < 200"
+                        class="typeicon {{ typeName($index) }}">
+                    </span>
+                </span>
+                        
+                <p>Reconsider:</p>
+                <span>
+                    <span 
+                        ng-repeat="matchup in teamMatchups track by $index" 
+                        ng-if="-100 <= matchup && matchup < 0"
+                        class="typeicon {{ typeName($index) }}">
+                    </span>
+                </span>
+                        
+                <p>ABORT MISSION:</p>
+                <span>
+                    <span 
+                        ng-repeat="matchup in teamMatchups track by $index" 
+                        ng-if="matchup < -100"
+                        class="typeicon {{ typeName($index) }}">
+                    </span>
+                </span>
             </div>
         </div>
     </div>

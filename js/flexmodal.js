@@ -7,10 +7,9 @@ angular.module('cgPrompt').factory('prompt',['$uibModal','$q',function($uibModal
         var defaults = {
             title: '',
             message: '',
-            input: false,
-            label: '',
-            value: '',
-            values: false,
+            classes: '',
+            inputs: [], // {name:string, label:string, type:string, values:[string]}
+            required: true,
             buttons: [
                 {label:'Cancel',cancel:true},
                 {label:'OK',primary:true}
@@ -38,7 +37,7 @@ angular.module('cgPrompt').factory('prompt',['$uibModal','$q',function($uibModal
                 }
             }
         }).result.then(function(result){
-            if (options.input){
+            if (options.inputs.length > 0){
                 defer.resolve(result.input);
             } else {
                 defer.resolve(result.button);
@@ -55,11 +54,9 @@ angular.module('cgPrompt').factory('prompt',['$uibModal','$q',function($uibModal
 ]);
 
 angular.module('cgPrompt').controller('cgPromptCtrl',['$scope','options','$timeout',function($scope,options,$timeout){
-
-    $scope.input = {name:options.value};
-
+    $scope.input = [];
+    
     $scope.options = options;
-
     $scope.form = {};
 
     $scope.buttonClicked = function(button){
@@ -67,11 +64,12 @@ angular.module('cgPrompt').controller('cgPromptCtrl',['$scope','options','$timeo
             $scope.$dismiss();
             return;
         }
-        if (options.input && $scope.form.cgPromptForm.$invalid){
+        if (options.inputs.length > 0 && $scope.form.cgPromptForm.$invalid){
             $scope.changed = true;
             return;
         }
-        $scope.$close({button:button,input:$scope.input.name});
+        
+        $scope.$close({button:button,input:$scope.input});
     };
 
     $scope.submit = function(){
@@ -100,4 +98,3 @@ angular.module('cgPrompt').controller('cgPromptCtrl',['$scope','options','$timeo
 
 
 }]);
-

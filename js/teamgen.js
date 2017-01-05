@@ -96,7 +96,7 @@ application.service('typeGrid', function() {
         
         // loop thru each move
         for(var i = movelist.length;i--;) {
-            if ( movelist[i].damaging ) { // only process if it is a damaging move
+            if ( movelist[i].damaging == true || movelist[i].damaging == 'true' ) { // only process if it is a damaging move
                 var moveType = this.getTypeId(movelist[i].type);
 
                 for(var y = this.typeEnum.length;y--;) {
@@ -139,20 +139,21 @@ application.service('typeGrid', function() {
             // e.g. 100% * 100% = 100%
             //      or, 200% * 50% = 100%
             for (var y = this.typeEnum.length; y--;) {
-                defenses[y] *= ( this.typeMatrix[y][t] / 100 );
+                defenses[y] *= (this.typeMatrix[y][t]/100);
             }
         }
         return defenses;
     };
 });
 
-application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($scope, $http, typeGrid){
+application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt', 
+                                      function($scope, $http, typeGrid, prompt) {
     
     $scope.team = [];
+                                          
+    $scope.teamMatchups = [];
     
-    $scope.stats = [
-        'hp', 'attack', 'defense', 'sp.atk', 'sp.def', 'speed'
-    ];
+    $scope.stats = ['hp', 'attack', 'defense', 'sp.atk', 'sp.def', 'speed'];
     
     // cap for teamsize
     $scope.teamCap = 6;
@@ -168,6 +169,37 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
     }
     
     //=
+    // catchMon :
+    // > data : { name:'string', types:['string', ...] }
+    // basic helper function to add a new pokemon to yr team
+    //=
+    $scope.catchMon = function(data) {
+        var temPoke = {
+            name:data.name, 
+            type:data.typing,
+            stats:[],
+            moves:[],
+            offensive_matchups:[], 
+            defensive_matchups:[],
+            net_matchups:[]
+        };
+        
+        // initialize type matchups to 100%
+        // initialize net matchups to 0 ( we subtract defense from offense for actual data )
+        for (var i = typeGrid.typeEnum.length; i--; ) {
+            temPoke.offensive_matchups[i] = 0;
+            temPoke.defensive_matchups[i] = 100;
+            temPoke.net_matchups[i] = 0;
+        }
+                
+        temPoke.defensive_matchups = typeGrid.rateDefense(temPoke);
+                
+        $scope.status = 'Complete!';
+        $scope.team.push(temPoke);
+        
+    }
+    
+    //=
     // dexRequest :
     // makes a request to pokeapi.co by pokemon type
     // TODO: more comprehensive search function
@@ -175,9 +207,9 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
     //=
     $scope.dexRequest = function() {
         // disallow searching for nothing
-        if ( $scope.searchtype != '' && $scope.searchtype != undefined ) {
+        if ($scope.searchtype != '' && $scope.searchtype != undefined) {
             // update search status for user
-            $scope.status = 'Searching for '+ $scope.searchtype +'...';
+            $scope.status = 'Searching for '+ $scope.searchtype + '...';
             
             $scope.pokebase = [];
             // find get string based on search box configuration
@@ -188,7 +220,6 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
             .then(function(response) {
                 $scope.status = 'Complete!';
                 $scope.pokebase = response.data.pokemon;
-                console.log(response.data.pokemon);
             },
             function(response) {
                 $scope.status = 'There was an Error,,';
@@ -200,14 +231,16 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
     };
     
     //=
-    // addMon : 
+    // addApiMon : 
     // > obj - the object that this was called from
     // gets the name of the pokemon from the button that was clicked, then makes a request to
     // pokemon.co by the pokemon's name. then adds it to party
     // TODO: probably should have http requests handled in a service
     //=
-    $scope.addMon = function(obj) {
-        if ( $scope.team.length < $scope.teamCap ) {
+    $scope.addApiMon = function(obj) {
+        // only add pokemon to team if yr team is not full
+        // cap may change based on team format (singles, doubles, battle spot, etc...)
+        if ($scope.team.length < $scope.teamCap) {
             var name = obj.target.attributes.data.value;
             $scope.status = 'Adding ' + name + ' to Team...';
 
@@ -216,35 +249,14 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
                 url: 'http://pokeapi.co/api/v2/pokemon/'+name
             })
             .then(function(response){
-                // create a temporary variable to hold the JSON object for each pokemon
-                var temPoke = {
-                    name:response.data.name, 
-                    type:[],
-                    stats:[],
-                    moves:[],
-                    offensive_matchups:[],
-                    defensive_matchups:[],
-                    net_matchups:[]
-                };
-
-                // reverse loop b/c order doesn't really matter here rn
-                // starts at length, i yields value before decrementing, so every index is processed
+                // create a temporary variable to format type data
+                var typeData = [];
+                
                 for (var i = response.data.types.length; i--; ) {
-                    temPoke.type.push(response.data.types[i].type.name);
+                    typeData[i] = response.data.types[i].type.name;
                 }
                 
-                // initialize type matchups to 100%
-                // initialize net matchups to 0 ( we subtract defense from offense for actual data )
-                for (var i = typeGrid.typeEnum.length; i--; ) {
-                    temPoke.offensive_matchups[i] = 0;
-                    temPoke.defensive_matchups[i] = 100;
-                    temPoke.net_matchups[i] = 0;
-                }
-                
-                temPoke.defensive_matchups = typeGrid.rateDefense(temPoke);
-                
-                $scope.status = 'Complete!';
-                $scope.team.push(temPoke);
+                $scope.catchMon({name:response.data.name, typing:typeData});
             },
             function(response){
                 $scope.status = 'There was an Error,,';
@@ -270,20 +282,91 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
     //  { 'name':string, 'type':string, 'damaging':boolean }
     //=
     $scope.addMove = function(index) {
-        // EXTREMELY TEMPORARY CODE
-        $scope.team[index].moves.push({'name':'tempMove','type':'grass','damaging':true});
-        $scope.team[index].moves.push({'name':'tempMove2','type':'poison','damaging':false});
-        $scope.team[index].moves.push({'name':'tempMove3','type':'water','damaging':true});
-        $scope.team[index].moves.push({'name':'tempMove4','type':'psychic','damaging':true});
-        
-        $scope.team[index].offensive_matchups = typeGrid.rateOffense($scope.team[index]);
-        $scope.team[index].net_matchups = $scope.netRatings($scope.team[index]);
+        prompt({
+            title:'Add A Move',
+            message:'Define what sort of move you would like to add:',
+            inputs:[
+                {
+                    name:'name',
+                    label:'Name',
+                    type:'text',
+                },
+                {
+                    name:'type',
+                    label:'Type',
+                    type:'select',
+                    values: typeGrid.typeEnum
+                },
+                {
+                    name:'damaging',
+                    label:'Damaging',
+                    type:'select',
+                    values: [true, false]
+                }
+            ]
+        })
+        .then(function(results) { 
+            console.log(results);
+            $scope.team[index].moves.push({
+                name: results.name,
+                type: results.type,
+                damaging: results.damaging
+            });
+            
+            $scope.team[index].offensive_matchups = typeGrid.rateOffense($scope.team[index]);
+            $scope.team[index].net_matchups = $scope.netRatings($scope.team[index]);
+            $scope.teamMatchus = $scope.teamNetAverage();
+        },
+        function() {
+        });
+    };
+                                          
+    //=
+    // customPokemon :
+    // prompts the user for some basic pokemon input and then adds to the team
+    //=
+    $scope.customPokemon = function() {
+        prompt({
+            title:'Add A Team Member',
+            message:'Define what sort of Pokemon you would like to add:',
+            inputs:[
+                {
+                    name:'name',
+                    label:'Name',
+                    type:'text',
+                },
+                {
+                    name:'type',
+                    label:'Type 1',
+                    type:'select',
+                    values: typeGrid.typeEnum
+                },
+                {
+                    name:'type2',
+                    label:'Type 2',
+                    type:'select',
+                    required:false,
+                    values: typeGrid.typeEnum
+                }
+            ]
+        })
+        .then(function(results) { 
+            console.log(results);
+            
+            var typingTemp = [];
+            
+            if (results.type != '' && results.type != undefined) typingTemp.push(results.type);
+            if (results.type2 != '' && results.type2 != undefined) typingTemp.push(results.type2);
+            
+            $scope.catchMon({name:results.name, typing:typingTemp});
+        },
+        function() {
+        });
     };
     
     //=
     // netRatings:
     // > pokemon - the pokemon whose ratings to compare
-    //
     //=
     $scope.netRatings = function(pokemon) {
         var offense = pokemon.offensive_matchups;
@@ -295,6 +378,23 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', function($s
         }
         
         return net;
+    }
+    
+    //=
+    // teamNetAverage:
+    //=
+    $scope.teamNetAverage = function() {
+        var tempNet = [];
+        var teamLength = $scope.team.length;
+        
+        for (var n = $scope.team[i].net_matchups.length; n--; ) {
+            for(var i = teamLength; i--; ) {
+                tempNet[n] += $scope.team[i].net_matchups[n];    
+            }
+            tempNet[n] /= teamLength;
+        }
+        
+        return tempNet;
     }
     
 }]);
