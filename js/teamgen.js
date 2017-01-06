@@ -146,10 +146,15 @@ application.service('typeGrid', function() {
     };
 });
 
-application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt', 
-                                      function($scope, $http, typeGrid, prompt) {
+application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt', function($scope, $http, typeGrid, prompt) {
+    
+    $scope.version = '1.0.0';
     
     $scope.team = [];
+    
+    $scope._OVERVIEW = -1;
+    $scope._SEARCH = -2;
+    $scope.interfaceState = $scope._OVERVIEW;
                                           
     $scope.teamMatchups = [];
     
@@ -274,6 +279,13 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
     $scope.removeMember = function(index) {
         $scope.team.splice(index, 1);
     };
+                                          
+    //=
+    // changeState :
+    //=
+    $scope.changeState = function(index) {
+        $scope.interfaceState = index;
+    }
     
     //=
     // addMove :
@@ -299,7 +311,7 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
                 },
                 {
                     name:'damaging',
-                    label:'Damaging',
+                    label:'Is Damaging?',
                     type:'select',
                     values: [true, false]
                 }
@@ -308,9 +320,9 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
         .then(function(results) { 
             console.log(results);
             $scope.team[index].moves.push({
-                name: results.name,
-                type: results.type,
-                damaging: results.damaging
+                name: results.input.name,
+                type: results.input.type,
+                damaging: results.input.damaging
             });
             
             $scope.team[index].offensive_matchups = typeGrid.rateOffense($scope.team[index]);
@@ -352,14 +364,12 @@ application.controller('teamdigest', ['$scope', '$http', 'typeGrid', 'prompt',
                 ]
             })
             .then(function(results) { 
-                console.log(results);
-
                 var typingTemp = [];
 
-                if (results.type != '' && results.type != undefined) typingTemp.push(results.type);
-                if (results.type2 != '' && results.type2 != undefined) typingTemp.push(results.type2);
+                if (results.input.type != '' && results.input.type != undefined) typingTemp.push(results.input.type);
+                if (results.input.type2 != '' && results.input.type2 != undefined) typingTemp.push(results.input.type2);
 
-                $scope.catchMon({name:results.name, typing:typingTemp});
+                $scope.catchMon({name:results.input.name, typing:typingTemp});
             },
             function() {
             });

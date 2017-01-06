@@ -1,4 +1,41 @@
-body { padding-top: 70px; }
+* { box-sizing: border-box; }
+
+.nav, .pokemon { padding: 1em;}
+.nav-group { overflow: auto; padding-bottom: 1em; }
+.panel-group { margin-bottom: 0; }
+.panel .col-sm-12, 
+.panel .col-sm-3 { 
+    padding: 0; margin: 0; 
+}
+
+.panel-attack {
+    border-color: palevioletred;
+}
+.panel-attack>.panel-heading {
+    color: darkred;
+    background-color: palevioletred;
+    border-color: palevioletred;
+}
+
+.panel-defense {
+    border-color: skyblue;
+}
+.panel-defense>.panel-heading {
+    color: darkblue;
+    background-color: skyblue;
+    border-color: skyblue;
+}
+
+.panel-net {
+    border-color: darkseagreen;
+}
+.panel-net>.panel-heading {
+    color: darkgreen;
+    background-color: darkseagreen;
+    border-color: darkseagreen;
+}
+
+.pull-right { margin-top: -0.25em; }
 
 .typeicon { 
     display: inline-block; width: 66px; height: 19px; 
