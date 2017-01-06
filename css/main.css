@@ -1,20 +1,30 @@
 * { box-sizing: border-box; }
-
-.nav, .pokemon { padding: 1em;}
+.container { width: 100%; padding-left: 1em; padding-right: 1em;  }
+.nav, .pokemon, #team { padding-top: 1em; }
 .nav-group { overflow: auto; padding-bottom: 1em; }
 .panel-group { margin-bottom: 0; }
-.panel .col-sm-12, 
-.panel .col-sm-3 { 
-    padding: 0; margin: 0; 
+
+.panel.col-sm-12, .panel.col-sm-3, .panel-group.col-sm-3, .panel.col-sm-2, .panel.col-sm-4 { 
+    padding: 0; margin-bottom: 0;
+}
+
+.panel-heading.btn.glyphicon { font-size: 0.5em; }
+
+.well { overflow: auto; }
+
+.panel-default {
+}
+.panel-default>.panel-heading {
+    background-color: lavender;
 }
 
 .panel-attack {
-    border-color: palevioletred;
+    border-color: #ffb7c4;
 }
 .panel-attack>.panel-heading {
     color: darkred;
-    background-color: palevioletred;
-    border-color: palevioletred;
+    background-color: #ffb7c4;
+    border-color: #ffb7c4;
 }
 
 .panel-defense {
@@ -27,12 +37,12 @@
 }
 
 .panel-net {
-    border-color: darkseagreen;
+    border-color: #97ea96;
 }
 .panel-net>.panel-heading {
     color: darkgreen;
-    background-color: darkseagreen;
-    border-color: darkseagreen;
+    background-color: #97ea96;
+    border-color: #97ea96;
 }
 
 .pull-right { margin-top: -0.25em; }
