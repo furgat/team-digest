@@ -1,5 +1,5 @@
 <! DOCTYPE html>
-<html lang="en" ng-app="furgatTeamDigest">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,28 +14,27 @@
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script> 
     
+    <script src="js/app.js"></script>
     <script src="js/angular-prompt.js"></script>
-    <script src="js/teamgen.js"></script>
+    <script src="js/pokemonData/typeGrid.js"></script>
+    <script src="js/pokemonData/apiRequest.js"></script>
+    <script src="js/pokemonData/pokemonTrainer.js"></script>
 </head>
-<body ng-controller="teamdigest">
+<body ng-app="teamDigest">
     
-    <div class="container">
+    <div ng-controller="MainCtrl" class="container">
         <div class="nav col-sm-2">
             <strong><span class="glyphicon glyphicon-sunglasses"></span> team-digest v.{{version}}</strong>
             <div class="nav-group">
                 <button type="button" class="btn btn-primary col-sm-12" ng-click="changeState(-1)">OVERVIEW</button>
                 <button ng-repeat="member in team track by $index" type="button" class="btn btn-default col-sm-12" ng-click="changeState($index)">{{member.name}}</button>
             </div>
-            <div class="nav-group">
-                <button type="button" class="btn btn-success col-sm-12" ng-click="customPokemon()">ADD NEW</button>
-                <button type="button" class="btn btn-success col-sm-12" ng-click="changeState(-2)">SEARCH</button>
-            </div>
         </div>
 
         <div id="team" class="col-sm-10">
             <div class="row">
                 <div class="well">
-                    <div class="panel panel-default col-sm-4" ng-repeat="member in team" ng-if="team.length>0">
+                    <div class="panel panel-default col-sm-4" ng-repeat="member in team">
                         <div class="panel-heading">
                             {{member.name}}
                             <button type="button" class="btn btn-danger pull-right" ng-click="removeMember($index)"><span class="glyphicon glyphicon-trash"></span></button>
@@ -44,7 +43,12 @@
                             <span ng-repeat="t in member.type track by $index" class="typeicon {{t}}"></span>
                         </div>
                     </div>
-                    <div ng-if="team.length==0">You haven't selected any team members yet.</div>
+                    <div ng-if="team.length < TEAM_CAP" class="col-sm-4">
+                        <div class="btn-group-vertical col-sm-12">
+                            <button type="button" class="btn btn-primary" ng-click="customPokemon()">ADD NEW</button>
+                            <button type="button" class="btn btn-primary" ng-click="changeState(-2)">SEARCH</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             
@@ -246,7 +250,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default col-sm-12" ng-show="interfaceState==_OVERVIEW">
+                <div class="panel panel-default col-sm-12" ng-show="interfaceState==states.OVERVIEW">
                     <div class="panel-heading">Team Overview</div>
                     <div class="panel-body">
                         <div class="panel panel-net">
@@ -310,7 +314,7 @@
 
                 </div>
 
-                <div class="panel panel-default col-sm-12" ng-show="interfaceState==_SEARCH">
+                <div class="panel panel-default col-sm-12" ng-show="interfaceState==states.SEARCH">
                     <div class="panel-heading"><span class="glyphicon glyphicon-search"></span> SEARCH:</div>
                     <div id="form">
                         <input type="text" ng-keyup="typeEnter()" ng-model="searchtype">

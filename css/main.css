@@ -4,7 +4,7 @@
 .nav-group { overflow: auto; padding-bottom: 1em; }
 .panel-group { margin-bottom: 0; }
 
-.panel.col-sm-12, .panel.col-sm-3, .panel-group.col-sm-3, .panel.col-sm-2, .panel.col-sm-4 { 
+.panel.col-sm-12, .panel.col-sm-3, .panel-group.col-sm-3, .panel.col-sm-2, .panel.col-sm-4, .btn-group-vertical.col-sm-12 { 
     padding: 0; margin-bottom: 0;
 }
 
