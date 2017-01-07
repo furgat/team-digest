@@ -7,7 +7,7 @@ var application = angular.module(
 
 application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTrainer', 'prompt', 'cookie', function($scope, request, typeGrid, pokemonTrainer, prompt, cookie) {
     
-    $scope.version = '1.0.0';
+    $scope.version = '0.0.0';
     
     $scope.states = {
         OVERVIEW: -1,
@@ -16,20 +16,30 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     
     $scope.interfaceState = $scope.states.OVERVIEW;
     
-    console.log(cookie.get('tdCookiePermission'));
-    var cookiePermission = cookie.get('tdCookiePermission');
+    $scope.stats = ['hp', 'attack', 'defense', 'sp.attack', 'sp.defense', 'speed'];
+    
+    $scope.getStatName = function(index) {
+        return $scope.stats[index];
+    }
 
+    var cookiePermission = cookie.get('tdCookiePermission');
     if ( cookiePermission == undefined ) {
         cookiePermission = false;
-    } else if ( cookiePermission ) {
-        cookie.grantPermission();
-        cookie.put('tdCookiePermission', cookiePermission);
-        pokemonTrainer.loadTeam(cookie.getObj('tdPokemonTrainerTeam'));
     }
     
+    if ( cookiePermission ) {
+        cookie.grantPermission();
+        var temp = cookie.getObj('tdPokemonTrainerTeam');
+        if ( temp !== undefined )
+            pokemonTrainer.loadTeam(temp);
+    }
+
     $scope.TEAM_CAP = pokemonTrainer.TEAM_CAP;
     $scope.MOVE_CAP = pokemonTrainer.MOVE_CAP;
+    
     $scope.team = pokemonTrainer.team;
+    $scope.teamMatchups = pokemonTrainer.teamMatchups;
+    $scope.statAverages = pokemonTrainer.statAverages;
     
     $scope.typeEnter = function() {
         if (event.which == 13) {
@@ -37,9 +47,17 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
         }
     };
     
+    $scope.rateTeam = function() {
+        pokemonTrainer.ratePokemon();
+    }
+    
     $scope.grabTeam = function() {
         $scope.team = pokemonTrainer.getTeam();
     };
+    
+    $scope.ratePokemon = function() {
+        pokemonTrainer.ratePokemon();
+    }
     
     $scope.saveTeam = function() {
         if (!cookie.permitted()) {
@@ -48,7 +66,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                 message:'Allow teamDigest to store Cookies?'
             }).then(function(response) {
                 cookie.grantPermission();
-                cookie.put('tdCookiePermission', cookiePermission);
+                cookie.put('tdCookiePermission', true);
                 $scope.saveTeam();
             },
             function(response) {
@@ -70,13 +88,6 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     //=
     $scope.typeName = function(id) {
         return typeGrid.getTypeName(id);
-    };
-    
-    //=
-    // teamMatchups :
-    // helper function to get matchups to the HTML
-    $scope.teamMatchups = function() {
-        return pokemonTrainer.getTeamMatchups();
     };
     
     //=
@@ -229,7 +240,6 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                 ]
             })
             .then(function(results) { 
-                console.log(results);
                 pokemonTrainer.teachMove(index, results.input);
             },
             function() {
@@ -269,21 +279,30 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                         type:'select',
                         required:false,
                         values: typeGrid.typeEnum
+                    },
+                    {
+                        name:'stats',
+                        label:'Stats Array (CSV):',
+                        type:'text'
                     }
                 ]
             })
             .then(function(results) { 
                 var typingTemp = [];
-
-                if (results.input.type != '' && results.input.type != undefined) {
-                    typingTemp.push(results.input.type);
-                } 
+            
+                var stats = results.input.stats.split(',');
                 
-                if (results.input.type2 != '' && results.input.type2 != undefined) {
+                if (results.input.type != '' && results.input.type != undefined)
+                    typingTemp.push(results.input.type);
+                    
+                if (results.input.type2 != '' && results.input.type2 != undefined)
                     typingTemp.push(results.input.type2);
-                }
-                 
-                pokemonTrainer.catch({name:results.input.name, typing:typingTemp});
+                
+                pokemonTrainer.catch({
+                    name:results.input.name, 
+                    typing:typingTemp,
+                    stats: stats
+                });
             },
             function() {
             });

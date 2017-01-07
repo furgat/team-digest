@@ -6,7 +6,7 @@
 
 .btn-group-vertical { margin-bottom: 1em; padding: 0; }
 
-.panel.col-sm-12, .panel.col-sm-3, .panel-group.col-sm-3, .panel.col-sm-2, .panel.col-sm-4, .btn-group.col-sm-12 { 
+.panel.col-sm-12, .panel.col-sm-3, .panel-group.col-sm-3, .panel.col-sm-2, .panel.col-sm-4, .btn-group.col-sm-12, .panel.col-sm-8 { 
     padding: 0; margin-bottom: 0;
 }
 
