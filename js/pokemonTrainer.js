@@ -3,18 +3,18 @@ var pokemonData = angular.module('teamDigest');
 pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
     
     this.team = [];
-    this.matchups = [];
+    
+    this.teamMatchups = [];
+    this.statAverages = [];
     
     this.MOVE_CAP = 4;
     this.TEAM_CAP = 3;
-    
-    this.stats = ['hp', 'attack', 'defense', 'sp.atk', 'sp.def', 'speed'];
     
     this.catch = function(pokemon) {
         var temPoke = {
             name:pokemon.name, 
             type:pokemon.typing,
-            stats:[],
+            stats:pokemon.stats,
             moves:[],
             offensive_matchups:[], 
             defensive_matchups:[],
@@ -38,6 +38,11 @@ pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
         this.team.splice(index, 1);
     }
     
+    this.loadTeam = function(team) {
+        this.team = team;
+        this.ratePokemon();
+    }
+    
     this.getTeam = function() {
         return this.team;
     }
@@ -55,10 +60,10 @@ pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
     }
 
     this.teamNetAverage = function() {
-        var tempNet = [];
         var team = this.team;
+        var teamLength = team.length;
         var numTypes = typeGrid.typeEnum.length;
-        var teamLength = this.team.length;
+        var tempNet = [];
         
         for (var n = numTypes; n--; ) {
             tempNet[n] = 0;
@@ -68,7 +73,24 @@ pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
             tempNet[n] /= teamLength;
         }
         
-        return tempNet;
+        this.teamMatchups = tempNet;
+    }
+    
+    this.teamStatAverage = function() {
+        var team = this.team;
+        var teamLength = team.length;
+        var numStats = 6;
+        var tempNet = [];
+        
+        for (var n = numStats; n--; ) {
+            tempNet[n] = 0;
+            for(var i = teamLength; i--; ) {
+                tempNet[n] += parseInt(team[i].stats[n]);
+            }
+            tempNet[n] = parseInt(tempNet[n] / teamLength);
+        }
+        
+        this.statAverages = tempNet;
     }
     
     this.teachMove = function(pindex, move) {
@@ -91,18 +113,15 @@ pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
     
     this.ratePokemon = function() { 
         var team = this.team;
-        for (var i = this.team.length; i--; ) {
+        for (var i = team.length; i--; ) {
             var pokemon = team[i];
             pokemon.offensive_matchups = typeGrid.rateOffense(pokemon);
             pokemon.net_matchups = this.netRatings(pokemon);
         }
-        this.teamMatchups = this.teamNetAverage();
+        this.teamNetAverage();
+        this.teamStatAverage();
     }
-    
-    this.getTeamMatchups = function() {
-        return this.matchups;
-    };
-    
+
     this.isTeamFull = function() {
         return (this.team.length == this.TEAM_CAP);
     }

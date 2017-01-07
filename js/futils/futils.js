@@ -1,1 +1,1 @@
-var futils = angular.module('fUtils', []);
+var futils = angular.module('fUtils', ['ngCookies']);

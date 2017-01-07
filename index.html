@@ -13,10 +13,12 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script> 
+    <script src="bower_components/angular-cookies/angular-cookies.min.js"></script> 
     
     <!-- futils module -->
     <script src="js/futils/futils.js"></script>
     <script src="js/futils/request.js"></script>
+    <script src="js/futils/cookie.js"></script>
     <!-- cgprompt module -->
     <script src="js/cgprompt/angular-prompt.js"></script>
     <!-- teamdigest module -->
@@ -34,7 +36,7 @@
                 <button ng-repeat="member in team track by $index" type="button" class="btn btn-default" ng-click="changeState($index)">{{member.name}}</button>
             </div>
             <div class="btn-group-vertical col-sm-12">
-                <button type="button" class="btn btn-success" ng-click="">SAVE</button>
+                <button type="button" class="btn btn-success" ng-click="saveTeam()">SAVE</button>
             </div>
         </div>
 
@@ -72,6 +74,9 @@
                                     Stats
                                 </div>
                                 <div class="panel-body">
+                                    <ul class="list-group col-sm-12">
+                                        <li class="list-group-item" ng-repeat="val in member.stats track by $index"> <strong>{{getStatName($index)}}:</strong> {{val}}</li>
+                                    </ul>
                                 </div>
                             </div>
                             
@@ -271,7 +276,15 @@
                 <div class="panel panel-default col-sm-12" ng-show="interfaceState==states.OVERVIEW">
                     <div class="panel-heading">Team Overview</div>
                     <div class="panel-body">
-                        <div class="panel panel-net">
+                        <div class="panel panel-default col-sm-4">
+                            <div class="panel-heading">Average Stats</div>
+                            <div class="panel-body">
+                                <ul class="list-group col-sm-12">
+                                    <li class="list-group-item" ng-repeat="val in statAverages track by $index"> <strong>{{getStatName($index)}}:</strong> {{val}}</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-net col-sm-8">
                             <div class="panel-heading">Net Matchups</div>
                             <div class="panel-body">
                                 <div class="panel-group">
