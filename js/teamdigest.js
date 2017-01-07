@@ -5,7 +5,7 @@ var application = angular.module(
     ]
 );
 
-application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTrainer', 'prompt', function($scope, request, typeGrid, pokemonTrainer, prompt) {
+application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTrainer', 'prompt', 'cookie', function($scope, request, typeGrid, pokemonTrainer, prompt, cookie) {
     
     $scope.version = '1.0.0';
     
@@ -14,11 +14,22 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
         SEARCH: -2
     }
     
+    $scope.interfaceState = $scope.states.OVERVIEW;
+    
+    console.log(cookie.get('tdCookiePermission'));
+    var cookiePermission = cookie.get('tdCookiePermission');
+
+    if ( cookiePermission == undefined ) {
+        cookiePermission = false;
+    } else if ( cookiePermission ) {
+        cookie.grantPermission();
+        cookie.put('tdCookiePermission', cookiePermission);
+        pokemonTrainer.loadTeam(cookie.getObj('tdPokemonTrainerTeam'));
+    }
+    
     $scope.TEAM_CAP = pokemonTrainer.TEAM_CAP;
     $scope.MOVE_CAP = pokemonTrainer.MOVE_CAP;
     $scope.team = pokemonTrainer.team;
-    
-    $scope.interfaceState = $scope.states.OVERVIEW;
     
     $scope.typeEnter = function() {
         if (event.which == 13) {
@@ -28,7 +39,29 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     
     $scope.grabTeam = function() {
         $scope.team = pokemonTrainer.getTeam();
-    }
+    };
+    
+    $scope.saveTeam = function() {
+        if (!cookie.permitted()) {
+            prompt({
+                title:'Permission Needed',
+                message:'Allow teamDigest to store Cookies?'
+            }).then(function(response) {
+                cookie.grantPermission();
+                cookie.put('tdCookiePermission', cookiePermission);
+                $scope.saveTeam();
+            },
+            function(response) {
+                return;
+            });
+        } else {
+            cookie.putObj('tdPokemonTrainerTeam', pokemonTrainer.getTeam());
+        }
+    };
+    
+    $scope.clearData = function() {
+        
+    };
     
     //=
     // typeName : id
@@ -37,14 +70,14 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     //=
     $scope.typeName = function(id) {
         return typeGrid.getTypeName(id);
-    }
+    };
     
     //=
     // teamMatchups :
     // helper function to get matchups to the HTML
     $scope.teamMatchups = function() {
         return pokemonTrainer.getTeamMatchups();
-    }
+    };
     
     //=
     // dexRequest :
@@ -139,19 +172,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     //      effect:'string', pp:int 
     //  }
     //=
-    $scope.addMove = function(index) {
-        var defaults = {
-            name:'struggle',
-            type:'normal',
-            contact:true,
-            stat:'atk',
-            power:50,
-            accuracy:100,
-            recoil:25,
-            effect:'This attack is used in desperation only if the user has no PP. It also damages the user a little.',
-            pp:0
-        };
-        
+    $scope.addMove = function(index) {        
         if (!pokemonTrainer.isMovelistFull(index)) {
             prompt({
                 title:'Add A Move',
@@ -160,7 +181,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                     {
                         name:'name',
                         label:'Name:',
-                        type:'text',
+                        type:'text'
                     },
                     {
                         name:'type',
@@ -219,7 +240,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     
     $scope.forgetMove = function(pindex, mindex) {
         pokemonTrainer.forgetMove(pindex, mindex);
-    }
+    };
                                           
     //=
     // customPokemon :

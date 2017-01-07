@@ -38,6 +38,11 @@ pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
         this.team.splice(index, 1);
     }
     
+    this.loadTeam = function(team) {
+        this.team = team;
+        this.ratePokemon();
+    }
+    
     this.getTeam = function() {
         return this.team;
     }
