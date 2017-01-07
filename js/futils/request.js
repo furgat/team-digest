@@ -1,8 +1,8 @@
-var pokemonData = angular.module('pokemonData');
+if (futils === undefined) angular.module('fUtils', []); 
 
-pokemonData.factory('pokeApi', ['$http', '$q', function($http, $q) {
+angular.module('fUtils').factory('request', ['$http', '$q', function($http, $q) {
     return {
-        makeRequest: function(options) {
+        make: function(options) {
             var deferred = $q.defer();
             $http(options).then(
                 function(response) {

@@ -1,4 +1,4 @@
-var pokemonData = angular.module('pokemonData');
+var pokemonData = angular.module('teamDigest');
 
 pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
     
@@ -70,11 +70,13 @@ pokemonData.factory('pokemonTrainer', ['typeGrid', function(typeGrid) {
     }
     
     this.teachMove = function(index, move) {
-        this.team[index].moves.push({
-            name: results.input.name,
-            type: results.input.type,
-            damaging: results.input.damaging
-        });
+        var moveData = {};
+        
+        for (key in move) {
+            moveData[key] = move[key];
+        }
+        
+        this.team[index].moves.push(move);
             
         this.team[index].offensive_matchups = typeGrid.rateOffense($scope.team[index]);
         this.team[index].net_matchups = this.netRatings($scope.team[index]);

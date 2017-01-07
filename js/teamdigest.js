@@ -1,11 +1,11 @@
 var application = angular.module(
     'teamDigest', 
     [
-        'ui.bootstrap', 'cgPrompt', 'pokemonData'
+        'ui.bootstrap', 'cgPrompt', 'fUtils'
     ]
 );
 
-application.controller('MainCtrl', ['$scope', 'pokeApi', 'typeGrid', 'pokemonTrainer', 'prompt', function($scope, pokeApi, typeGrid, pokemonTrainer, prompt) {
+application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTrainer', 'prompt', function($scope, request, typeGrid, pokemonTrainer, prompt) {
     
     $scope.version = '1.0.0';
     
@@ -59,7 +59,7 @@ application.controller('MainCtrl', ['$scope', 'pokeApi', 'typeGrid', 'pokemonTra
             
             $scope.pokebase = [];
             // find get string based on search box configuration
-            var response = pokeApi.makeRequest(
+            var response = request.make(
                 {method: 'GET', url: 'http://pokeapi.co/api/v2/type/' + $scope.searchtype}
             ).then(
                 function(response) { 
@@ -91,7 +91,7 @@ application.controller('MainCtrl', ['$scope', 'pokeApi', 'typeGrid', 'pokemonTra
             var name = obj.target.attributes.data.value;
             $scope.status = 'Adding ' + name + ' to Team...';
 
-            var response = pokeApi.makeRequest(
+            var response = request.make(
                 {method:'GET', url:'http://pokeapi.co/api/v2/pokemon/'+name}
             ).then(
                 function(response) {
@@ -133,9 +133,24 @@ application.controller('MainCtrl', ['$scope', 'pokeApi', 'typeGrid', 'pokemonTra
     // addMove :
     // > index - the array index of the team member to edit
     // adds a move to the team member's movelist, for now just 
-    //  { 'name':string, 'type':string, 'damaging':boolean }
+    //  { 
+    //      name:'string', type:'string', contact:boolean, stat:'atk:spatk', power:int, accuracy:int, recoil:int,
+    //      effect:'string', pp:int 
+    //  }
     //=
     $scope.addMove = function(index) {
+        var defaults = {
+            name:'struggle',
+            type:'normal',
+            contact:true,
+            stat:'atk',
+            power:50,
+            accuracy:100,
+            recoil:25,
+            effect:'This attack is used in desperation only if the user has no PP. It also damages the user a little.',
+            pp:0
+        };
+        
         if (!pokemonTrainer.isMovelistFull(index)) {
             prompt({
                 title:'Add A Move',
@@ -153,10 +168,41 @@ application.controller('MainCtrl', ['$scope', 'pokeApi', 'typeGrid', 'pokemonTra
                         values: typeGrid.typeEnum
                     },
                     {
-                        name:'damaging',
-                        label:'Is Damaging?',
+                        name:'contact',
+                        label:'Contact',
                         type:'select',
                         values: [true, false]
+                    },
+                    {
+                        name:'stat',
+                        label:'Atk or Sp.Atk',
+                        type:'select',
+                        values: ['atk', 'spatk']
+                    },
+                    {
+                        name:'power',
+                        label:'Power',
+                        type:'text'
+                    },
+                    {
+                        name:'accuracy',
+                        label:'Accuracy',
+                        type:'text'
+                    },
+                    {
+                        name:'recoil',
+                        label:'Contact',
+                        type:'text'
+                    },
+                    {
+                        name:'effect',
+                        label:'Effect Description:',
+                        type:'text'
+                    },
+                   {
+                        name:'pp',
+                        label:'Power Points:',
+                        type:'text'
                     }
                 ]
             })

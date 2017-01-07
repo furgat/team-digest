@@ -14,11 +14,15 @@
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script> 
     
-    <script src="js/app.js"></script>
-    <script src="js/angular-prompt.js"></script>
-    <script src="js/pokemonData/typeGrid.js"></script>
-    <script src="js/pokemonData/apiRequest.js"></script>
-    <script src="js/pokemonData/pokemonTrainer.js"></script>
+    <!-- futils module -->
+    <script src="js/futils/futils.js"></script>
+    <script src="js/futils/request.js"></script>
+    <!-- cgprompt module -->
+    <script src="js/cgprompt/angular-prompt.js"></script>
+    <!-- teamdigest module -->
+    <script src="js/teamdigest.js"></script>
+    <script src="js/typeGrid.js"></script>
+    <script src="js/pokemonTrainer.js"></script>
 </head>
 <body ng-app="teamDigest">
     
@@ -90,7 +94,7 @@
                                     <div class="form-group">
                                         <label for="{{member.name+'held'}}">Held Item:</label>
                                         <select class="form-control" id="{{member.name+'held'}}">
-                                            <option selected="selected">Levitate</option>
+                                            <option selected="selected">Soothe Bell</option>
                                         </select>
                                     </div>
                                 </div>

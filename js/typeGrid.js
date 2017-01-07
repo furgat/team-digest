@@ -1,4 +1,4 @@
-var pokemonData = angular.module('pokemonData', []);
+var pokemonData = angular.module('teamDigest');
 // constant orders
 // stats: [hp, attack, defense, sp.atk, sp.def, speed]
 // types: [nrml, fire, water, elec, grass, ice, fght, psn, grnd, fly, psy, bug, rock, gho, drgn, drk, stl, fairy]
@@ -95,7 +95,7 @@ pokemonData.service('typeGrid', function() {
         
         // loop thru each move
         for(var i = movelist.length;i--;) {
-            if ( movelist[i].damaging == true || movelist[i].damaging == 'true' ) { // only process if it is a damaging move
+            if ( movelist[i].power > 0 ) { // only process if it is a damaging move
                 var moveType = this.getTypeId(movelist[i].type);
 
                 for(var y = this.typeEnum.length;y--;) {
