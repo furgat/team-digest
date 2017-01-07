@@ -1,0 +1,1 @@
+var futils = angular.module('fUtils', []);
