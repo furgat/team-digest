@@ -15,6 +15,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     }
     
     $scope.TEAM_CAP = pokemonTrainer.TEAM_CAP;
+    $scope.MOVE_CAP = pokemonTrainer.MOVE_CAP;
     $scope.team = pokemonTrainer.team;
     
     $scope.interfaceState = $scope.states.OVERVIEW;
@@ -158,40 +159,40 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                 inputs:[
                     {
                         name:'name',
-                        label:'Name',
+                        label:'Name:',
                         type:'text',
                     },
                     {
                         name:'type',
-                        label:'Type',
+                        label:'Type:',
                         type:'select',
                         values: typeGrid.typeEnum
                     },
                     {
                         name:'contact',
-                        label:'Contact',
+                        label:'Makes Contact:',
                         type:'select',
                         values: [true, false]
                     },
                     {
                         name:'stat',
-                        label:'Atk or Sp.Atk',
+                        label:'Atk or Sp.Atk:',
                         type:'select',
                         values: ['atk', 'spatk']
                     },
                     {
                         name:'power',
-                        label:'Power',
+                        label:'Power:',
                         type:'text'
                     },
                     {
                         name:'accuracy',
-                        label:'Accuracy',
+                        label:'Accuracy:',
                         type:'text'
                     },
                     {
                         name:'recoil',
-                        label:'Contact',
+                        label:'Recoil (%):',
                         type:'text'
                     },
                     {
@@ -215,6 +216,10 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
             });
         }
     };
+    
+    $scope.forgetMove = function(pindex, mindex) {
+        pokemonTrainer.forgetMove(pindex, mindex);
+    }
                                           
     //=
     // customPokemon :
