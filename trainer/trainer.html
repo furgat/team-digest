@@ -1,0 +1,325 @@
+<div ng-controller="TrainerCtrl">
+    <div class="row">
+        <div class="well">
+            <div class="panel panel-default col-sm-4" ng-repeat="member in trainer.team track by $index">
+                <div class="panel-heading">
+                    {{member.name}}
+                    <div class="button-group pull-right">
+                        <button type="button" class="btn btn-default" ng-click="changeState($index)"><span class="glyphicon glyphicon-eye-open"></span></button>
+                        <button type="button" class="btn btn-danger" ng-click="removeMember($index)"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <span ng-repeat="t in member.type track by $index" class="typeicon {{t}}"></span>
+                </div>
+            </div>
+
+            <div ng-if="trainer.isTeamFull() == false" class="col-sm-4">
+                <div class="btn-group-vertical col-sm-12">
+                    <button type="button" class="btn btn-primary" ng-click="customPokemon()">ADD NEW</button>
+                    <!-- <button type="button" class="btn btn-primary" ng-click="changeState(-2)">SEARCH</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="panel panel-default col-sm-12" ng-repeat="member in trainer.team track by $index" ng-show="isState($index)" ng-init="pokemonIndex = $index">
+            <div class="panel-heading">
+                {{member.name}}'s overview
+                <button type="button" class="btn btn-default pull-right" ng-click="changeState(-1)">Back to Overview</button>
+            </div>
+            <div class="panel-body">
+                <div class="panel-group col-md-4 col-sm-6 col-xs-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Stats
+                        </div>
+                        <div class="panel-body">
+                            <ul class="list-group col-sm-12">
+                                <li class="list-group-item" ng-repeat="val in member.stats track by $index"> <strong>{{getStatName($index)}}:</strong> {{val}}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Aux
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="{{member.name+'nature'}}">Nature:</label>
+                                <select class="form-control" id="{{member.name+'nature'}}">
+                                    <option selected="selected">Adamant</option>
+                                    <option>Impish</option>
+                                    <option>Modest</option>
+                                    <option>Jolly</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{member.name+'ability'}}">Ability:</label>
+                                <select class="form-control" id="{{member.name+'ability'}}">
+                                    <option selected="selected">Levitate</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="{{member.name+'held'}}">Held Item:</label>
+                                <select class="form-control" id="{{member.name+'held'}}">
+                                    <option selected="selected">Soothe Bell</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Moves
+                        </div>
+                        <div class="panel-body" ng-if="member.moves.length<MOVE_CAP">
+                            <div class="btn-group col-sm-12">
+                                <button type="button" class="btn btn-default col-sm-12" ng-click="addMove($index)">
+                                    <span class="glyphicon glyphicon-plus"></span> Teach a Move
+                                </button>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="member.moves.length>0">
+                            <uib-accordion close-others="oneAtATime">
+                                <div uib-accordion-group class="panel-default" heading="{{move.name}}" ng-repeat="move in member.moves">
+                                    <ul class="list-group col-sm-12">
+                                        <li class="list-group-item" ng-repeat="(key,val) in move"><strong>{{key}}:</strong> {{val}}</li>
+                                    </ul>
+                                    <div class="btn-group col-sm-12">
+                                        <button type="button" class="btn btn-warning col-sm-12" ng-click="forgetMove(pokemonIndex, $index)">Forget {{move.name}}</button>
+                                    </div>
+                                </div>
+                            </uib-accordion>
+                        </div>    
+                    </div>
+                </div>
+
+                <div class="panel-group col-md-8 col-sm-6 col-xs-12">
+                    <div class="panel panel-attack">
+                        <div class="panel-heading">Offensive Matchups</div>
+                        <div class="panel-body">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Vulnerable:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.offensive_matchups track by $index" 
+                                            ng-if="matchup >= 200"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Neutral:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.offensive_matchups track by $index" 
+                                            ng-if="100 <= matchup && matchup < 200"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Reisisted:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.offensive_matchups track by $index" 
+                                            ng-if="matchup < 100"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-defense">
+                        <div class="panel-heading">Defensive Matchups</div>
+                        <div class="panel-body">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Vulnerable:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.defensive_matchups track by $index" 
+                                            ng-if="matchup > 100"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Neutral:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.defensive_matchups track by $index" 
+                                            ng-if="matchup == 100"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Reisisted:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.defensive_matchups track by $index" 
+                                            ng-if="matchup < 100"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-net">
+                        <div class="panel-heading">Net Matchups</div>
+                        <div class="panel-body">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Easy Prey:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.net_matchups track by $index" 
+                                            ng-if="200 <= matchup"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Advantage:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.net_matchups track by $index" 
+                                            ng-if="100 <= matchup && matchup < 200"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Neutral:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.net_matchups track by $index" 
+                                            ng-if="0 < matchup && matchup < 100"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Reisisted:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.net_matchups track by $index" 
+                                            ng-if="-100 <= matchup && matchup < 0"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">Abort Mission:</div>
+                                    <div class="panel-body">
+                                        <span 
+                                            ng-repeat="matchup in member.net_matchups track by $index" 
+                                            ng-if="matchup < -100"
+                                            class="typeicon {{typeName($index)}}">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default col-sm-12" ng-show="isState(states.OVERVIEW)">
+            <div class="panel-heading">Team Overview</div>
+            <div class="panel-body">
+                <div class="panel panel-default col-sm-4">
+                    <div class="panel-heading">Average Stats</div>
+                    <div class="panel-body">
+                        <ul class="list-group col-sm-12">
+                            <li class="list-group-item" ng-repeat="val in trainer.statAverages track by $index"> <strong>{{getStatName($index)}}:</strong> {{val}}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-net col-sm-8">
+                    <div class="panel-heading">Net Matchups</div>
+                    <div class="panel-body">
+                        <div class="panel-group">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Easy Prey:</div>
+                                <div class="panel-body">
+                                    <span 
+                                        ng-repeat="matchup in trainer.teamMatchups track by $index" 
+                                        ng-if="200 <= matchup"
+                                        class="typeicon {{typeName($index)}}">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Advantage:</div>
+                                <div class="panel-body">
+                                    <span 
+                                        ng-repeat="matchup in trainer.teamMatchups track by $index" 
+                                        ng-if="100 <= matchup && matchup < 200"
+                                        class="typeicon {{typeName($index)}}">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Neutral:</div>
+                                <div class="panel-body">
+                                    <span 
+                                        ng-repeat="matchup in trainer.teamMatchups track by $index" 
+                                        ng-if="0 < matchup && matchup < 100"
+                                        class="typeicon {{typeName($index)}}">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Reisisted:</div>
+                                <div class="panel-body">
+                                    <span 
+                                        ng-repeat="matchup in trainer.teamMatchups track by $index" 
+                                        ng-if="-100 <= matchup && matchup < 0"
+                                        class="typeicon {{typeName($index)}}">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Abort Mission:</div>
+                                <div class="panel-body">
+                                    <span 
+                                        ng-repeat="matchup in trainer.teamMatchups track by $index" 
+                                        ng-if="matchup < -100"
+                                        class="typeicon {{typeName($index)}}">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default col-sm-12" ng-show="isState(states.SEARCH)">
+            <div class="panel-heading"><span class="glyphicon glyphicon-search"></span> SEARCH:</div>
+            <div id="form">
+                <input type="text" ng-keyup="typeEnter()" ng-model="searchtype">
+                <input type="button" value="GO" ng-click="dexRequest()">
+                <div ng-bind="status"></div>
+            </div>
+            <div id="data">
+                <p class="datamon" ng-repeat="mon in pokebase">
+                    <input type="button" data="{{ mon.pokemon.name }}" value="{{ mon.pokemon.name }}" ng-click="addApiMon($event)">
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>

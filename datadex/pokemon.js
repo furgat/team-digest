@@ -3,7 +3,7 @@ angular.module('teamDigest');
 angular.module('teamDigest').factory('Pokemon', ['typeGrid', function(typeGrid) {
     this.data = {};
     
-    this.initialize = function(data) {
+    this.initialize = function(idata) {
         var defaults = {
             name:'Ditto', 
             type:['Normal'],
@@ -12,6 +12,10 @@ angular.module('teamDigest').factory('Pokemon', ['typeGrid', function(typeGrid) 
             offensive_matchups:[],
             defensive_matchups:[],
             net_matchups:[]
+        };
+        
+        for(var key in defaults) {
+            this.data[key] = (data[key] != undefined ? idata[key] : defaults[key] );
         }
     }
     

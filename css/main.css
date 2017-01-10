@@ -10,8 +10,6 @@
     padding: 0; margin-bottom: 0;
 }
 
-.panel-heading.btn.glyphicon { font-size: 0.5em; }
-
 .well { overflow: auto; }
 
 .panel-default {
@@ -47,7 +45,8 @@
     border-color: #97ea96;
 }
 
-.pull-right { margin-top: -0.25em; }
+.panel-heading>button.pull-right, 
+.panel-heading>.button-group.pull-right>button { padding: 0.25em; margin-top: -0.3em; }
 
 .typeicon { 
     display: inline-block; width: 66px; height: 19px; 

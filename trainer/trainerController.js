@@ -1,24 +1,11 @@
-var application = angular.module(
-    'teamDigest', 
-    [
-        'ui.bootstrap', 'cgPrompt', 'fUtils', 'LocalStorageModule'
-    ]
-);
-
-application.config(['localStorageServiceProvider', function(localStorageServiceProvider) {
-    localStorageServiceProvider.setPrefix('teamDigest');
-}]);
-
-application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'PokemonTrainer', 'prompt', 'localStorageService', function($scope, request, typeGrid, PokemonTrainer, prompt, localStorageService) {
+angular.module('teamDigest').controller('TrainerCtrl', ['$scope', 'request', 'typeGrid', 'PokemonTrainer', 'prompt', 'localStorageService', function($scope, request, typeGrid, PokemonTrainer, prompt, localStorageService) {
     
-    $scope.version = '0.0.0';
-    
-    $scope.states = {
+    $scope.states = { 
         OVERVIEW: -1,
         SEARCH: -2
-    }
-    
-    $scope.interfaceState = $scope.states.OVERVIEW;
+    };
+        
+    $scope.interfaceState = -1;
     
     $scope.stats = ['hp', 'attack', 'defense', 'sp.attack', 'sp.defense', 'speed'];
     
@@ -180,6 +167,11 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'PokemonTra
     //=
     $scope.changeState = function(index) {
         $scope.interfaceState = index;
+    }
+    
+    $scope.isState = function(index) {
+        console.log('Checking for ' + index + ' : ' + ($scope.interfaceState == index));
+        return ($scope.interfaceState == index);
     }
     
     //=
