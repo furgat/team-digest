@@ -1,11 +1,15 @@
 var application = angular.module(
     'teamDigest', 
     [
-        'ui.bootstrap', 'cgPrompt', 'fUtils'
+        'ui.bootstrap', 'cgPrompt', 'fUtils', 'LocalStorageModule'
     ]
 );
 
-application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTrainer', 'prompt', 'cookie', function($scope, request, typeGrid, pokemonTrainer, prompt, cookie) {
+application.config(['localStorageServiceProvider', function(localStorageServiceProvider) {
+    localStorageServiceProvider.setPrefix('teamDigest');
+}]);
+
+application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'PokemonTrainer', 'prompt', 'localStorageService', function($scope, request, typeGrid, PokemonTrainer, prompt, localStorageService) {
     
     $scope.version = '0.0.0';
     
@@ -21,8 +25,10 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     $scope.getStatName = function(index) {
         return $scope.stats[index];
     }
-
-    var cookiePermission = cookie.get('tdCookiePermission');
+    
+    $scope.trainer = new PokemonTrainer();
+    
+    /*var cookiePermission = cookie.get('tdCookiePermission');
     if ( cookiePermission == undefined ) {
         cookiePermission = false;
     }
@@ -32,35 +38,24 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
         var temp = cookie.getObj('tdPokemonTrainerTeam');
         if ( temp !== undefined )
             pokemonTrainer.loadTeam(temp);
+    }*/
+    
+    if (localStorageService.isSupported) {
+        var loadData = localStorageService.get('trainerTeam');
+        
+        if (loadData != undefined) {
+            $scope.trainer.loadTeam(loadData);
+        }
     }
 
-    $scope.TEAM_CAP = pokemonTrainer.TEAM_CAP;
-    $scope.MOVE_CAP = pokemonTrainer.MOVE_CAP;
-    
-    $scope.team = pokemonTrainer.team;
-    $scope.teamMatchups = pokemonTrainer.teamMatchups;
-    $scope.statAverages = pokemonTrainer.statAverages;
-    
     $scope.typeEnter = function() {
         if (event.which == 13) {
             $scope.dexRequest();
         }
     };
     
-    $scope.rateTeam = function() {
-        pokemonTrainer.ratePokemon();
-    }
-    
-    $scope.grabTeam = function() {
-        $scope.team = pokemonTrainer.getTeam();
-    };
-    
-    $scope.ratePokemon = function() {
-        pokemonTrainer.ratePokemon();
-    }
-    
     $scope.saveTeam = function() {
-        if (!cookie.permitted()) {
+        /*if (!cookie.permitted()) {
             prompt({
                 title:'Permission Needed',
                 message:'Allow teamDigest to store Cookies?'
@@ -74,7 +69,20 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
             });
         } else {
             cookie.putObj('tdPokemonTrainerTeam', pokemonTrainer.getTeam());
-        }
+        }*/
+        prompt({
+            title:'Save Team:',
+            message:'Save the current team to Local Storage?'
+        }).then(function(response){
+            // save to local storage    
+            if (localStorageService.isSupported) {
+                localStorageService.set('trainerTeam', $scope.trainer.getTeam());
+            } else {
+                // unsupported
+            }
+        },function(response){
+            // don't save to local storage
+        });
     };
     
     $scope.clearData = function() {
@@ -146,7 +154,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                         typeData[i] = response.types[i].type.name;
                     }
                 
-                    pokemonTrainer.catch({name:response.name, typing:typeData});
+                    $scope.trainer.catch({name:response.name, typing:typeData});
                     $scope.status = name + ' added to team!';
                 },
                 function(response) {
@@ -164,7 +172,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     // removes a pokemon from the team
     // =
     $scope.removeMember = function(index) {
-        pokemonTrainer.release(index);
+        $scope.trainer.release(index);
     };
                                           
     //=
@@ -184,7 +192,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     //  }
     //=
     $scope.addMove = function(index) {        
-        if (!pokemonTrainer.isMovelistFull(index)) {
+        if (!$scope.trainer.isMovelistFull(index)) {
             prompt({
                 title:'Add A Move',
                 message:'Define what sort of move you would like to add:',
@@ -240,7 +248,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                 ]
             })
             .then(function(results) { 
-                pokemonTrainer.teachMove(index, results.input);
+                $scope.trainer.teachMove(index, results.input);
             },
             function() {
                 // rejected
@@ -249,7 +257,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     };
     
     $scope.forgetMove = function(pindex, mindex) {
-        pokemonTrainer.forgetMove(pindex, mindex);
+        $scope.trainer.forgetMove(pindex, mindex);
     };
                                           
     //=
@@ -257,7 +265,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
     // prompts the user for some basic pokemon input and then adds to the team
     //=
     $scope.customPokemon = function() {
-        if (!pokemonTrainer.isTeamFull()) {
+        if (!$scope.trainer.isTeamFull()) {
             prompt({
                 title:'Add A Team Member',
                 message:'Define what sort of Pokemon you would like to add:',
@@ -298,7 +306,7 @@ application.controller('MainCtrl', ['$scope', 'request', 'typeGrid', 'pokemonTra
                 if (results.input.type2 != '' && results.input.type2 != undefined)
                     typingTemp.push(results.input.type2);
                 
-                pokemonTrainer.catch({
+                $scope.trainer.catch({
                     name:results.input.name, 
                     typing:typingTemp,
                     stats: stats

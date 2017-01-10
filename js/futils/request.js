@@ -1,4 +1,4 @@
-if (futils === undefined) angular.module('fUtils', []); 
+angular.module('fUtils', []); 
 
 angular.module('fUtils').factory('request', ['$http', '$q', function($http, $q) {
     return {
