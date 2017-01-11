@@ -17,7 +17,9 @@
     <script src="bower_components/angular-route/angular-route.min.js"></script>
     
     <!-- futils module -->
+    <script src="js/futils/fUtils.js"></script>
     <script src="js/futils/request.js"></script>
+    <script src="js/futils/btn-href.js"></script>
     <!-- cgprompt module -->
     <script src="js/cgprompt/angular-prompt.js"></script>
     <!-- teamdigest module -->
@@ -27,6 +29,7 @@
     <script src="trainer/trainerController.js"></script>
     
     <script src="datadex/dataDex.js"></script>
+    <script src="datadex/dexController.js"></script>
     <script src="datadex/ability.js"></script>
     <script src="datadex/helditem.js"></script>
     <script src="datadex/move.js"></script>
@@ -39,19 +42,12 @@
         <div class="nav col-sm-2">
             <strong><span class="glyphicon glyphicon-sunglasses"></span> team-digest v.{{version}}</strong>
             <div class="btn-group-vertical col-sm-12">
-                <button type="button" class="btn btn-primary" ng-click="">OVERVIEW</button>
-            </div>
-            <div class="btn-group-vertical col-sm-12">
-                <button type="button" class="btn btn-primary" ng-click="">dataDEX</button>
-                <span ng-if="interfaceState==states.DEX">
-                    <button  type="button" class="btn btn-default" ng-click="">Add Ability</button>
-                    <button type="button" class="btn btn-default" ng-click="">Add Move</button>
-                    <button type="button" class="btn btn-default" ng-click="">Add Pokemon</button>
-                    <button type="button" class="btn btn-default" ng-click="">Add Held Item</button>
-                </span>
-            </div>
-            <div class="btn-group-vertical col-sm-12">
-                <button type="button" class="btn btn-success" ng-click="saveAllData()">SAVE</button>
+                <button type="button" class="btn btn-primary" btn-href="/trainer">
+                    <span class="glyphicon glyphicon-dashboard"></span>&nbsp;OVERVIEW
+                </button>
+                <button type="button" class="btn btn-default" btn-href="/datadex">
+                    <span class="glyphicon glyphicon-th-list"></span>&nbsp;DataDEX
+                </button>
             </div>
         </div>
 
