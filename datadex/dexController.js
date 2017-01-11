@@ -3,7 +3,8 @@ angular.module('teamDigest').controller('DexCtrl', ['$scope', 'localStorageServi
     $scope.initialize = function() {
         $scope.library = {
             pokemon:DataDex.pokemon, 
-            moves:DataDex.moves
+            moves:DataDex.moves,
+            abilities:DataDex.abilities
         };
     }
     
@@ -144,6 +145,32 @@ angular.module('teamDigest').controller('DexCtrl', ['$scope', 'localStorageServi
     
     $scope.delMove = function(index) {
         DataDex.delMove(index);
+    }
+    
+    $scope.customAbility = function() {
+        prompt({
+            title:'Add an Ability',
+            message:'Define your Ability',
+            inputs: [
+                {
+                    name:'name',
+                    label:'Name:',
+                    type:'text'
+                },
+                {
+                    name:'description',
+                    label:'Description:',
+                    type:'text'
+                }
+            ]
+        })
+        .then(function(results) {
+            DataDex.addAbility(results.input);
+        },function() {});
+    }
+    
+    $scope.delAbility = function(index) {
+        DataDex.delAbility(index);
     }
     
     //=

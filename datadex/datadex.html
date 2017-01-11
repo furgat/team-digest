@@ -40,6 +40,25 @@
                     </div>
                 </uib-accordion>
             </uib-tab>
+            <uib-tab index="2" heading="AbilityDEX">
+                <div class="panel-body">
+                    <button type="button" class="btn btn-default col-sm-3 pull-right" ng-click="customAbility()">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add an Ability
+                    </button>
+                </div>
+                <uib-accordion close-others="oneAtATime">
+                    <div uib-accordion-group class="panel-default" heading="{{ability.data.name}}" ng-repeat="ability in library.abilities">
+                        <div class="panel-body">
+                            <ul class="list-group col-sm-12">
+                                <li class="list-group-item" ng-repeat="(key,val) in ability.data"><strong>{{key}}:</strong> {{val}}</li>
+                            </ul>
+                        </div>
+                        <div class="btn-group col-sm-12">
+                            <button type="button" class="btn btn-warning col-sm-12" ng-click="delAbility($index)">Delete {{ability.data.name}}</button>
+                        </div>
+                    </div>
+                </uib-accordion>
+            </uib-tab>
         </uib-tabset>
         <div class="btn-group col-sm-12">
             <button type="button" class="btn btn-success col-sm-6" ng-click="saveLibrary()">

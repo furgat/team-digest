@@ -1,8 +1,9 @@
-angular.module('teamDigest').service('DataDex', ['Pokemon', 'Move', '$rootScope', function(Pokemon, Move, $rootScope) {
+angular.module('teamDigest').service('DataDex', ['Pokemon', 'Move', 'Ability', '$rootScope', function(Pokemon, Move, Ability, $rootScope) {
     
     var DataDex = {
         pokemon: [],
         moves: [],
+        abilities: [],
         
         load: function(idata) {
             for(var key in idata) {
@@ -11,23 +12,27 @@ angular.module('teamDigest').service('DataDex', ['Pokemon', 'Move', '$rootScope'
                         this.pokemon = idata[key];
                     } else if (key == 'moves') {
                         this.moves = idata[key];
+                    } else if (key == 'abilities') {
+                        this.abilities = idata[key];
                     }
                 }
             }    
             
             if (this.pokemon === null) this.pokemon = [];
             if (this.moves === null) this.moves = [];
+            if (this.abilities === null) this.abilities = [];
             $rootScope.$broadcast('dexupdate');
         },
         
         clearAll: function() {
             pokemon = [];
             moves = [];
+            abilities = [];
             $rootScope.$broadcast('dexupdate');
         },
 
         getJSON: function() {
-            return {pokemon:this.pokemon, moves:this.moves};
+            return {pokemon:this.pokemon, moves:this.moves, abilities:this.abilities};
         },
 
         addPokemon: function(pokemon) {
@@ -37,6 +42,11 @@ angular.module('teamDigest').service('DataDex', ['Pokemon', 'Move', '$rootScope'
 
         addMove: function(move) {
             this.moves.push(new Move(move));  
+            $rootScope.$broadcast('dexupdate');
+        },
+        
+        addAbility: function(ability) {
+            this.abilities.push(new Ability(ability));
             $rootScope.$broadcast('dexupdate');
         },
         
@@ -50,22 +60,30 @@ angular.module('teamDigest').service('DataDex', ['Pokemon', 'Move', '$rootScope'
             $rootScope.$broadcast('dexupdate');
         },
         
-        getPokeData: function(pokeName) {
-            for(var i = this.pokemon.length; i--; ) {
-                if (this.pokemon[i].data.name == pokeName) {
-                    return this.pokemon[i].data;
+        delAbility: function(index) {
+            this.abilities.splice(index, 1);
+            $rootScope.$broadcast('dexupdate');
+        },
+        
+        checkName: function(name, list) {
+            for(var i = list.length; i--; ) {
+                if (list[i].name == name) {
+                    return list[i];
                 }
             }
             return undefined;
         },
         
+        getPokeData: function(pokeName) {
+            return this.checkName(pokeName, this.pokemon);
+        },
+        
         getMoveData: function(moveName) {
-            for(var i = this.moves.length; i--; ) {
-                if (this.moves[i].data.name == moveName) {
-                    return this.moves[i].data;
-                }
-            }
-            return undefined;
+            return this.checkName(moveName, this.moves);
+        },
+        
+        getAbilityData: function(abilityName) {
+            return this.checkName(abilityName, this.moves);
         }
     }
     
