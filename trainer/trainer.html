@@ -109,7 +109,7 @@
                         </div>
                         <div class="panel-body" ng-if="member.moves.length>0">
                             <uib-accordion close-others="oneAtATime">
-                                <div uib-accordion-group class="panel-default" heading="{{move.name}}" ng-repeat="move in member.moves">
+                                <div uib-accordion-group class="panel-default" heading="{{move.name}}" ng-repeat="move in member.moves track by $index">
                                     <ul class="list-group col-sm-12">
                                         <li class="list-group-item" ng-repeat="(key,val) in move"><strong>{{key}}:</strong> {{val}}</li>
                                     </ul>

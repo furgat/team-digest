@@ -109,6 +109,14 @@ function($scope, request, typeGrid, PokemonTrainer, prompt, localStorageService,
     }
 
     //=
+    // forgetMove :
+    // > pokemonIndex, moveIndex
+    //=
+    $scope.forgetMove = function(pokemonIndex, moveIndex) {
+      $scope.trainer.forgetMove(pokemonIndex, moveIndex);
+    }
+
+    //=
     // changeState :
     //=
     $scope.changeState = function(index) {

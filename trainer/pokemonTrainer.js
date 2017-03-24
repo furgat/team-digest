@@ -112,6 +112,7 @@ angular.module('teamDigest').factory('PokemonTrainer', ['typeGrid', function(typ
         }
 
         this.forgetMove = function(pindex, mindex) {
+            console.log('Forget! ' + pindex, + ', ' + mindex);
             this.team[pindex].moves.splice(mindex, 1);
             this.ratePokemon();
         }
