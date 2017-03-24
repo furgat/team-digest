@@ -34,6 +34,8 @@ angular.module('teamDigest').factory('PokemonTrainer', ['typeGrid', function(typ
                 temPoke.defensive_matchups = typeGrid.rateDefense(temPoke);
 
                 this.team.push(temPoke);
+            } else {
+              console.log('Pokemon is Undefined!')
             }
         }
 
