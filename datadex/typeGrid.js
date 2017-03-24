@@ -35,7 +35,8 @@ pokemonData.service('typeGrid', function() {
     // typeMatrix[type][i++]
     // defenses vvvv
     // typeMatrix[i++][type]
-    this.typeMatrix = [
+    var typeGrid = {
+        typeMatrix: [
       // nrm, fir, wtr, elc, grs, ice, fgt, psn, grn, fly, psy, bug, rck, gho, dra, drk, stl, fai
         [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100,  50,   0, 100, 100,  50, 100], // normal
         [100,  50,  50, 100, 200, 200, 100, 100, 100, 100, 100, 200,  50, 100,  50, 100, 200, 100], // fire
@@ -55,92 +56,95 @@ pokemonData.service('typeGrid', function() {
         [100, 100, 100, 100, 100, 100,  50, 100, 100, 100, 200, 100, 100, 200, 100,  50, 100,  50], // dark
         [100,  50,  50,  50, 100, 200, 100, 100, 100, 100, 100, 100, 200, 100, 100, 100,  50, 200], // steel
         [100,  50, 100, 100, 100, 100, 200,  50, 100, 100, 100, 100, 100, 100, 200, 200,  50, 100]  // fairy
-    ];
+        ],
     
-    this.typeEnum = [
-        'normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
-    ];
+        typeEnum: [
+            'normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'
+        ],
     
-    //=
-    // getTypeName :
-    // > id - int, the id of the type to fetch
-    // returns the name of the id associated from this.typeEnum
-    //=
-    this.getTypeName = function(id) {
-        return this.typeEnum[id];
-    };
+        //=
+        // getTypeName :
+        // > id - int, the id of the type to fetch
+        // returns the name of the id associated from this.typeEnum
+        //=
+        getTypeName: function(id) {
+            return this.typeEnum[id];
+        },
     
-    //=
-    // getTypeId :
-    // > type - string, the name of the type whose id to fetch
-    // fetches the array associated with the type from this.typeEnum
-    //=
-    this.getTypeId = function(type) {
-        for(var i = this.typeEnum.length;i--;) {
-            if (this.typeEnum[i] == type) 
-                return i;
-        }
-        return 0; // default to normal type
-    };
+        //=
+        // getTypeId :
+        // > type - string, the name of the type whose id to fetch
+        // fetches the array associated with the type from this.typeEnum
+        //=
+        getTypeId: function(type) {
+            for(var i = this.typeEnum.length;i--;) {
+                if (this.typeEnum[i] == type) 
+                    return i;
+            }
+            return 0; // default to normal type
+        },
     
-    //=
-    // compareOffense :
-    // > attacker - JSON object containing attacker data
-    //
-    //=
-    this.rateOffense = function(attacker) {
-        var attackerTypes = attacker.type;
-        var movelist = attacker.moves;
-        var effectiveness = [];
-        
-        // loop thru each move
-        for(var i = movelist.length;i--;) {
-            if ( movelist[i].power > 0 ) { // only process if it is a damaging move
-                var moveType = this.getTypeId(movelist[i].type);
+        //=
+        // compareOffense :
+        // > attacker - JSON object containing attacker data
+        //
+        //=
+        rateOffense: function(attacker) {
+            var attackerTypes = attacker.type;
+            var movelist = attacker.moves;
+            var effectiveness = [];
 
-                for(var y = this.typeEnum.length;y--;) {
-                    if (effectiveness[y] == undefined) 
-                        effectiveness[y] = 0; // default to zero effectiveness
-                    
-                    var damage = this.typeMatrix[moveType][y]; //[move type][defending type]
-                    
-                    // check for STAB Bonus
-                    for(var x = attackerTypes.length;x--;) {
-                        if (attackerTypes[x] == movelist[i].type) {
-                            damage *= 1.5;
+            // loop thru each move
+            for(var i = movelist.length;i--;) {
+                if ( movelist[i].power > 0 ) { // only process if it is a damaging move
+                    var moveType = this.getTypeId(movelist[i].type);
+
+                    for(var y = this.typeEnum.length;y--;) {
+                        if (effectiveness[y] == undefined) 
+                            effectiveness[y] = 0; // default to zero effectiveness
+
+                        var damage = this.typeMatrix[moveType][y]; //[move type][defending type]
+
+                        // check for STAB Bonus
+                        for(var x = attackerTypes.length;x--;) {
+                            if (attackerTypes[x] == movelist[i].type) {
+                                damage *= 1.5;
+                            }
                         }
+
+                        // only if this move will do 'more' damage than earlier evaluated moves
+                        if (effectiveness[y] < damage) 
+                            effectiveness[y] = damage;
                     }
-                    
-                    // only if this move will do 'more' damage than earlier evaluated moves
-                    if (effectiveness[y] < damage) 
-                        effectiveness[y] = damage;
                 }
             }
-        }
-        
-        return effectiveness;
-    };
+
+            return effectiveness;
+        },
     
-    //=
-    // compareDefense :
-    // > defender - JSON object containing defender data
-    // compare defense typing against every type and return an array of effectiveness
-    //=
-    this.rateDefense = function(defender) {
-        var types = defender.type;
-        var defenses = defender.defensive_matchups;
-        // go thru both types
-        for(var i = types.length; i--;) {
-            var t = this.getTypeId(types[i]); // get the type ID
-            
-            // loop thru all of the types and multiply against defensive rating
-            // multiplying like percentages, 
-            // e.g. 100% * 100% = 100%
-            //      or, 200% * 50% = 100%
-            for (var y = this.typeEnum.length; y--;) {
-                defenses[y] *= (this.typeMatrix[y][t]/100);
+        //=
+        // compareDefense :
+        // > defender - JSON object containing defender data
+        // compare defense typing against every type and return an array of effectiveness
+        //=
+        rateDefense: function(defender) {
+            var types = defender.type;
+            var defenses = defender.defensive_matchups;
+            // go thru both types
+            for(var i = types.length; i--;) {
+                var t = this.getTypeId(types[i]); // get the type ID
+
+                // loop thru all of the types and multiply against defensive rating
+                // multiplying like percentages, 
+                // e.g. 100% * 100% = 100%
+                //      or, 200% * 50% = 100%
+                for (var y = this.typeEnum.length; y--;) {
+                    defenses[y] *= (this.typeMatrix[y][t]/100);
+                }
             }
+            return defenses;
         }
-        return defenses;
-    };
+    }
+        
+    return (typeGrid);
 });

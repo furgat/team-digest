@@ -1,4 +1,4 @@
-angular.module('fUtils', []); 
+//angular.module('futils', []); 
 
 angular.module('fUtils').factory('request', ['$http', '$q', function($http, $q) {
     return {
