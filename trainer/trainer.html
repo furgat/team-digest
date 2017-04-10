@@ -230,7 +230,7 @@
                                     <div class="panel-body">
                                         <span
                                             ng-repeat="matchup in member.net_matchups track by $index"
-                                            ng-if="0 < matchup && matchup < 100"
+                                            ng-if="0 <= matchup && matchup < 100"
                                             class="typeicon {{typeName($index)}}">
                                         </span>
                                     </div>
@@ -307,7 +307,7 @@
                                     <div class="panel-body">
                                         <span
                                             ng-repeat="matchup in trainer.teamMatchups track by $index"
-                                            ng-if="0 < matchup && matchup < 100"
+                                            ng-if="0 <= matchup && matchup < 100"
                                             class="typeicon {{typeName($index)}}">
                                         </span>
                                     </div>
