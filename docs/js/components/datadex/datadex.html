@@ -1,0 +1,86 @@
+<div ng-controller="DexCtrl" class="panel panel-default">
+    <div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span>&nbsp;DataDEX Library</div>
+    <div class="panel-body">
+        <uib-tabset class="col-sm-12 panel-body" active="active">
+            <uib-tab index="0" heading="PokeDEX">
+                <div class="panel-body">
+                    <button type="button" class="btn btn-default col-sm-3 pull-right" ng-click="customPokemon()">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add a Pokemon
+                    </button>
+                </div>
+                <uib-accordion close-others="oneAtATime">
+                    <div uib-accordion-group class="panel-default" heading="{{pokemon.data.name}}" ng-repeat="pokemon in library.pokemon">
+                        <div class="panel-body">
+                            <ul class="list-group col-sm-12">
+                                <li class="list-group-item" ng-repeat="(key,val) in pokemon.data"><strong>{{key}}:</strong> {{val}}</li>
+                            </ul>
+                        </div>
+                        <div class="btn-group col-sm-12">
+                            <button type="button" class="btn btn-warning col-sm-12" ng-click="delPokemon($index)">Delete {{pokemon.data.name}}</button>
+                        </div>
+                    </div>
+                </uib-accordion>
+            </uib-tab>
+            <uib-tab index="1" heading="MoveDEX">
+                <div class="panel-body">
+                    <button type="button" class="btn btn-default col-sm-3 pull-right" ng-click="customMove()">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add a Move
+                    </button>
+                </div>
+                <uib-accordion close-others="oneAtATime">
+                    <div uib-accordion-group class="panel-default" heading="{{move.data.name}}" ng-repeat="move in library.moves">
+                        <div class="panel-body">
+                            <ul class="list-group col-sm-12">
+                                <li class="list-group-item" ng-repeat="(key,val) in move.data"><strong>{{key}}:</strong> {{val}}</li>
+                            </ul>
+                        </div>
+                        <div class="btn-group col-sm-12">
+                            <button type="button" class="btn btn-warning col-sm-12" ng-click="delMove($index)">Delete {{move.data.name}}</button>
+                        </div>
+                    </div>
+                </uib-accordion>
+            </uib-tab>
+            <uib-tab index="2" heading="AbilityDEX">
+                <div class="panel-body">
+                    <button type="button" class="btn btn-default col-sm-3 pull-right" ng-click="customAbility()">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add an Ability
+                    </button>
+                </div>
+                <uib-accordion close-others="oneAtATime">
+                    <div uib-accordion-group class="panel-default" heading="{{ability.data.name}}" ng-repeat="ability in library.abilities">
+                        <div class="panel-body">
+                            <ul class="list-group col-sm-12">
+                                <li class="list-group-item" ng-repeat="(key,val) in ability.data"><strong>{{key}}:</strong> {{val}}</li>
+                            </ul>
+                        </div>
+                        <div class="btn-group col-sm-12">
+                            <button type="button" class="btn btn-warning col-sm-12" ng-click="delAbility($index)">Delete {{ability.data.name}}</button>
+                        </div>
+                    </div>
+                </uib-accordion>
+            </uib-tab>
+        </uib-tabset>
+        <div class="btn-group col-sm-12">
+            <button type="button" class="btn btn-success col-sm-6" ng-click="saveLibrary()">
+                <span class="glyphicon glyphicon-save"></span>&nbsp;SAVE LIBRARY
+            </button>
+            <button type="button" class="btn btn-danger col-sm-6">
+                <span class="glyphicon glyphicon-trash"></span>&nbsp;DELETE ALL DATA
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- for pokeAPI <div class="panel panel-default col-sm-12" ng-show="isState(states.SEARCH)">
+            <div class="panel-heading"><span class="glyphicon glyphicon-search"></span> SEARCH:</div>
+            <div id="form">
+                <input type="text" ng-keyup="typeEnter()" ng-model="searchtype">
+                <input type="button" value="GO" ng-click="dexRequest()">
+                <div ng-bind="status"></div>
+            </div>
+            <div id="data">
+                <p class="datamon" ng-repeat="mon in pokebase">
+                    <input type="button" data="{{mon.pokemon.name}}" value="{{mon.pokemon.name}}" ng-click="addApiMon($event)">
+                </p>
+            </div>
+        </div>-->
