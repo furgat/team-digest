@@ -18,8 +18,8 @@ describe('Team Digest :: ', () => {
     expect<any>(subject).toEqual(result);
   });
 
-  it('should have <home>', () => {
-    let subject = element(by.css('app home')).isPresent();
+  it('should have <nav-bar>', () => {
+    let subject = element(by.id('#navbar')).isPresent();
     let result  = true;
     expect<any>(subject).toEqual(result);
   });

@@ -7,11 +7,11 @@ angular.module(
     localStorageServiceProvider.setPrefix('teamDigest');
 
     $routeProvider.when('/trainer', {
-        templateUrl: './components/trainer/trainer.html',
+        templateUrl: './js/components/trainer/trainer.html',
         controller: 'TrainerCtrl'
     })
     .when('/datadex', {
-        templateUrl: './components/datadex/datadex.html',
+        templateUrl: './js/components/datadex/datadex.html',
         controller: 'DexCtrl'
     })
     .otherwise({

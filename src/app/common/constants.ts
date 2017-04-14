@@ -47,10 +47,10 @@ export const NATURES = [
 ];
 
 // algorithm constants
-export const S: Number = 200; // STRONG
-export const N: Number = 100; // NEUTRAL
-export const R: Number =  50; // RESIST
-export const Z: Number =   0; // ZERO
+export const S: number = 200; // STRONG
+export const N: number = 100; // NEUTRAL
+export const R: number =  50; // RESIST
+export const Z: number =   0; // ZERO
 
 // Offense Left to Right
 // DEFENSEense Top to Bottom

@@ -24,6 +24,7 @@ import { ROUTES } from './app.routes';
 import { AppComponent } from './app.component';
 import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
+import { TDStorageProvider } from './common/provider/';
 
 import { BuilderComponent } from './builder';
 import { PCComponent } from './pc';
@@ -38,7 +39,7 @@ import '../styles/headings.css';
 // Application wide providers
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
-  AppState
+  AppState, TDStorageProvider
 ];
 
 type StoreType = {

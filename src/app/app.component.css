@@ -6,3 +6,8 @@ html, body{
 a.active {
   background-color: gray;
 }
+
+.top {
+  margin: 0;
+  padding: 0;
+}

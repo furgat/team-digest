@@ -13,6 +13,8 @@
   <!-- Configured Head Tags  -->
   <%= webpackConfig.htmlElements.headTags %>
   <% } %>
+  <link href="./assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="./assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet"/>
 
   <!-- base url -->
   <base href="<%= htmlWebpackPlugin.options.metadata.baseUrl %>">
@@ -42,7 +44,6 @@
   <!-- Webpack Dev Server reload -->
   <script src="/webpack-dev-server.js"></script>
   <% } %>
-
 
 </body>
 </html>
