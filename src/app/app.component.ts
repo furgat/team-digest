@@ -21,11 +21,18 @@ import { NavBarComponent } from './common/ui';
     './app.component.css'
   ],
   template: `
-    <div class="top container" [ngStyle]="{'border-top': activeBorder}" >
-      <nav-bar (selected)="changeColor(onNavClick($event))"></nav-bar>
+    <div class="no-margin no-padding container col-xs-12" [ngStyle]="{'border-top': activeBorder}" >
+
+      <div class="nav-container no-margin no-padding col-xs-1 col-s-2">
+        <img src="{{logo}}" alt="name" />
+        <nav-bar (selected)="changeColor(onNavClick($event))">
+        </nav-bar>
+      </div>
+
       <main class="col-xs-11 col-s-10">
         <router-outlet></router-outlet>
       </main>
+
     </div>
 
     <footer>
@@ -38,7 +45,7 @@ export class AppComponent implements OnInit {
   public name = 'Team Digest';
   public url = 'https://github.com/furgat/team-digest';
   public borderColors: string[] = ['#CC2EFA', '#ACFA58', '#FF4000'];
-  public activeBorder: string;
+  public activeBorder: string = '4px solid #CC2EFA';
 
   constructor(
     public appState: AppState
@@ -46,10 +53,9 @@ export class AppComponent implements OnInit {
 
   public ngOnInit() {
     console.log('Initial App State', this.appState.state);
-    this.changeColor(this.borderColors[0]);
   }
 
-  private onNavClick(value: string) {
+  public onNavClick(value: string) {
     switch (value) {
       case 'pc':
         return this.borderColors[1];
@@ -60,7 +66,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private changeColor(value: string, prepend:string = "4px solid") {
+  public changeColor(value: string, prepend: string = '4px solid ') {
     this.activeBorder = prepend + value;
   }
 }

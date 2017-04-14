@@ -7,7 +7,16 @@ a.active {
   background-color: gray;
 }
 
-.top {
+.no-margin {
   margin: 0;
+}
+
+.no-padding {
   padding: 0;
 }
+
+.nav-container {
+  background-color: #555;
+}
+
+img { width: 100%; border-top: 1px solid #333; border-bottom: 1px solid #333; }
