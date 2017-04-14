@@ -1,15 +1,17 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home';
-import { AboutComponent } from './about';
+
+// components
+import { BuilderComponent } from './builder';
+import { PCComponent } from './pc';
+import { DataDexComponent } from './datadex';
 import { NoContentComponent } from './no-content';
 
 import { DataResolver } from './app.resolver';
 
 export const ROUTES: Routes = [
-  { path: '',      component: HomeComponent },
-  { path: 'home',  component: HomeComponent },
-  { path: 'about', component: AboutComponent },
-  { path: 'detail', loadChildren: './+detail#DetailModule'},
-  { path: 'barrel', loadChildren: './+barrel#BarrelModule'},
+  { path: '',      component: BuilderComponent },
+  { path: 'builder',  component: BuilderComponent },
+  { path: 'pc', component: PCComponent },
+  { path: 'datadex', component: DataDexComponent },
   { path: '**',    component: NoContentComponent },
 ];

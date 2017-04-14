@@ -10,7 +10,7 @@ import {
 import { AppComponent } from './app.component';
 import { AppState } from './app.service';
 
-describe(`App`, () => {
+describe(`TeamDigest :: `, () => {
   let comp: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
@@ -37,10 +37,10 @@ describe(`App`, () => {
     expect(comp).toBeDefined();
   });
 
-  it(`should be @AngularClass`, () => {
-    expect(comp.url).toEqual('https://twitter.com/AngularClass');
-    expect(comp.angularclassLogo).toEqual('assets/img/angularclass-avatar.png');
-    expect(comp.name).toEqual('Angular 2 Webpack Starter');
+  it(`should be TeamDigest`, () => {
+    expect(comp.url).toEqual('https://github.com/furgat/team-digest');
+    expect(comp.logo).toEqual('assets/img/team-digest-logo.png');
+    expect(comp.name).toEqual('Team Digest');
   });
 
   it('should log ngOnInit', () => {

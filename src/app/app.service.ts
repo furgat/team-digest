@@ -29,6 +29,9 @@ export class AppState {
     return this._state[prop] = value;
   }
 
+  // save prop to storage
+  public store(prop: string) {}
+
   private _clone(object: InternalStateType) {
     // simple object clone
     return JSON.parse(JSON.stringify( object ));

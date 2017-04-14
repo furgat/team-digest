@@ -1,13 +1,11 @@
-# humanstxt.org/
-# The humans responsible & technology colophon
+# https://github.com/furgat/
 
 # TEAM
 
-  <name> -- <role> -- <twitter>
+  Furgat -- Lead Developer
 
 # THANKS
 
-  <name>
   PatrickJS -- @gdi2290
   AngularClass -- @AngularClass
 
