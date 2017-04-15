@@ -7,6 +7,14 @@ export class TDStorageProvider implements OnInit {
   private _permission: boolean = false;
   private _storage;
 
+  public ngOnInit() {
+    if (typeof(Storage) !== 'undefined') {
+      this._storage = window.localStorage;
+    } else {
+      this._storage = undefined;
+    }
+  }
+
   public get(key: string = undefined): string {
     if (this._storage && key) {
       return (this._storage.getItem(key) ? this._storage.getItem(key) : '{}');
@@ -30,13 +38,5 @@ export class TDStorageProvider implements OnInit {
 
   public hasPermission(): boolean {
     return this._permission;
-  }
-
-  private ngOnInit() {
-    if (typeof(Storage) !== 'undefined') {
-      this._storage = window.localStorage;
-    } else {
-      this._storage = undefined;
-    }
   }
 };

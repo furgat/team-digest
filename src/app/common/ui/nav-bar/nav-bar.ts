@@ -11,26 +11,29 @@ import { Component, Output, EventEmitter } from '@angular/core';
 
     .linkContainer {
       display: block;
-      border-top: 1px solid #444;
-      border-bottom: 1px solid #444;
+      border-top: 1px solid #555;
+      border-bottom: 1px solid #333;
       color: #CDCDCD;
-      background-color: #555;
+      background-color: #444;
       padding-top: 0.5em;
       padding-bottom: 0.5em;
       margin: 0;
+      border-radius: 0px;
     }
 
     .linkContainer:hover {
       cursor: pointer;
-      background-color: #444;
+      background-color: #555;
+      border-top: 1px solid #666;
     }
 
     .linkContainer > span { margin: 0; padding: 0; }
 
-    .activeLink { background-color: #444; }
+    .activeLink { border-top: 1px solid #666; background-color: #555; }
     .builder:hover > span { color: #CC2EFA; }
     .pc:hover > span { color: #ACFA58; }
     .datadex:hover > span { color: #FF4000; }
+
   `],
   template: `
     <nav>
@@ -40,7 +43,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
         routerLinkActive="activeLink"
         (click)="onClick('builder')"
       >
-        <span class="col-xs-12 fa fa-tachometer fa-2x"></span>
+        <span class="col-xs-12 fa fa-bar-chart fa-3x"></span>
         <span class="col-xs-12">Builder</span>
       </a>
       <a

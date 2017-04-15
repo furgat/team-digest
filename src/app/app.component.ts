@@ -3,12 +3,15 @@
  */
 import {
   Component,
-  OnInit,
+  OnInit, OnDestroy,
   ViewEncapsulation
 } from '@angular/core';
 import { AppState } from './app.service';
-
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { NavBarComponent } from './common/ui';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/mergeMap';
 
 /*
  * App Component
@@ -21,15 +24,18 @@ import { NavBarComponent } from './common/ui';
     './app.component.css'
   ],
   template: `
-    <div class="no-margin no-padding container col-xs-12" [ngStyle]="{'border-top': activeBorder}" >
+    <div
+      class="top-container no-margin no-padding container col-xs-12"
+      [ngStyle]="{'border-top': activeBorder}"
+    >
 
-      <div class="nav-container no-margin no-padding col-xs-1 col-s-2">
-        <img src="{{logo}}" alt="name" />
+      <div class="nav col-xs-1 col-s-2 no-margin no-padding">
+        <img src="{{ logo }}" alt="{{ name }}" />
         <nav-bar (selected)="changeColor(onNavClick($event))">
         </nav-bar>
       </div>
 
-      <main class="col-xs-11 col-s-10">
+      <main class="main col-xs-11 col-s-10">
         <router-outlet></router-outlet>
       </main>
 
@@ -40,19 +46,33 @@ import { NavBarComponent } from './common/ui';
     </footer>
   `
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   public logo = 'assets/img/team-digest-logo.png';
   public name = 'Team Digest';
   public url = 'https://github.com/furgat/team-digest';
   public borderColors: string[] = ['#CC2EFA', '#ACFA58', '#FF4000'];
   public activeBorder: string = '4px solid #CC2EFA';
+  private _subscription;
 
   constructor(
-    public appState: AppState
+    public appState: AppState,
+    public router: Router,
+    public activatedRoute: ActivatedRoute
   ) {}
 
   public ngOnInit() {
     console.log('Initial App State', this.appState.state);
+    this._subscription = this.router.events
+      .filter((event) => event instanceof NavigationEnd)
+      .subscribe((event) => {
+        this.changeColor(
+          this.onNavClick(event.url.substring(1, event.url.length))
+        );
+      });
+  }
+
+  public ngOnDestroy() {
+    this._subscription.unsubscribe();
   }
 
   public onNavClick(value: string) {

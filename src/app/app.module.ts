@@ -36,6 +36,7 @@ import { NoContentComponent } from './no-content';
 
 import { FilterBarComponent, NavBarComponent } from './common/ui';
 
+import '../styles/bootstrap/dist/css/bootstrap.min.css';
 import '../styles/styles.scss';
 import '../styles/headings.css';
 
