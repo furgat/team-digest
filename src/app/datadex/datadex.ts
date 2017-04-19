@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppState } from '../app.service';
-import { FilterBarComponent } from '../common/ui';
+import { FilterBarComponent, DynamicFormComponent } from '../common/ui';
 
 @Component({
   selector: 'data-dex',
@@ -33,7 +33,7 @@ import { FilterBarComponent } from '../common/ui';
             <div class="container col-xs-12">
               <span class="col-xs-10 col-xs-offset-1">
                 <filter-bar
-                  buttonName="add new {{ category.name }}"
+                  buttonName="new {{ category.name }}"
                   (buttonClick)="onButtonClick(category.name)"
                   (filterClick)="onFilterClick($event)"
                 >
