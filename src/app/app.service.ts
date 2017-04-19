@@ -61,6 +61,16 @@ export class AppState implements OnInit {
     this._tdStorage = tdStorage;
   }
 
+  public ngOnInit() {
+    // load data if it exists
+    const loadedData = this._load();
+    for (let key in loadedData) {
+      if (loadedData.hasOwnProperty(key)) {
+        this.set(key, loadedData[key], false);
+      }
+    }
+  }
+
   // already return a clone of the current state
   public get state() {
     return this._state = this._clone(this._state);
@@ -118,15 +128,5 @@ export class AppState implements OnInit {
       }
     }
     return this.DEFAULT_STATE;
-  }
-
-  private ngOnInit() {
-    // load data if it exists
-    const loadedData = this._load();
-    for (let key in loadedData) {
-      if (loadedData.hasOwnProperty(key)) {
-        this.set(key, loadedData[key], false);
-      }
-    }
   }
 };

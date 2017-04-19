@@ -6,7 +6,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     .capitalize { text-transform: capitalize; }
   `],
   template: `
-    <form>
     <div class="input-group col-xs-12">
       <button class="capitalize col-xs-3 btn btn-primary" type="button">
         {{ buttonName }}
@@ -19,7 +18,6 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
         </span>
       </div>
     </div>
-    </form>
   `
 })
 export class FilterBarComponent {

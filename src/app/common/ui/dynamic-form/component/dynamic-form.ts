@@ -15,7 +15,7 @@ export class DynamicFormComponent implements OnInit {
   public onSubmit() {
     this.payLoad = JSON.stringify(this.form.value);
   }
-  private ngOnInit() {
+  public ngOnInit() {
     this.form = this.qcp.toFormGroup(this.questions);
   }
 }
