@@ -6,7 +6,7 @@ import { QuestionBase }     from '../questions';
   templateUrl: './dynamic-form-question.html'
 })
 export class DRFQuestionComponent {
-  @Input() question: QuestionBase<any>;
-  @Input() form: FormGroup;
-  get isValid() { return this.form.controls[this.question.key].valid; }
+  @Input() public question: QuestionBase<any>;
+  @Input() public form: FormGroup;
+  public get isValid() { return this.form.controls[this.question.key].valid; }
 }

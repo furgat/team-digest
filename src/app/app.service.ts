@@ -5,39 +5,6 @@ export type InternalStateType = {
   [key: string]: any
 };
 
-export type Ability = {
-  id: number,
-  name: string,
-  description: string
-};
-
-export type Move = {
-  id: number,
-  name: string,
-  type: number,
-  description: string
-};
-
-export type PokemonTemplate = {
-  id: number,
-  name: string,
-  types: number[],
-  abilityList: Ability[],
-  moveList: Move[],
-  baseStats: number[]
-};
-
-export type Pokemon = {
-  id: number,
-  name: string,
-  template: PokemonTemplate,
-  nature: number,
-  ability: number,
-  moves: number[],
-  ivSpread?: number[],
-  evSpread?: number[]
-};
-
 @Injectable()
 export class AppState implements OnInit {
 

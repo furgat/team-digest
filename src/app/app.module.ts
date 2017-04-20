@@ -27,16 +27,25 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppComponent } from './app.component';
 import { APP_RESOLVER_PROVIDERS } from './app.resolver';
 import { AppState, InternalStateType } from './app.service';
+
 import { TDStorageProvider } from './common/provider/';
 
+import {
+  FilterBarComponent, NavBarComponent,
+  DynamicFormComponent, DRFQuestionComponent,
+  QuestionControlProvider
+} from './common/ui';
+
 import { BuilderComponent } from './builder';
+
 import { PCComponent } from './pc';
+
 import { DataDexComponent } from './datadex';
+import { DexModalFormComponent, DexFormsQuestionProvider } from './datadex/forms';
+
 import { NoContentComponent } from './no-content';
 
-import { FilterBarComponent, NavBarComponent } from './common/ui';
-
-import '../styles/bootstrap/dist/css/bootstrap.min.css';
+import '../styles/bootstrap/css/bootstrap.min.css';
 import '../styles/styles.scss';
 import '../styles/headings.css';
 
@@ -44,7 +53,9 @@ import '../styles/headings.css';
 const APP_PROVIDERS = [
   ...APP_RESOLVER_PROVIDERS,
   AppState,
-  TDStorageProvider
+  TDStorageProvider,
+  QuestionControlProvider,
+  DexFormsQuestionProvider
 ];
 
 type StoreType = {
@@ -60,7 +71,10 @@ type StoreType = {
   bootstrap: [ AppComponent ],
   declarations: [
     AppComponent,
-    BuilderComponent, PCComponent, DataDexComponent, NoContentComponent,
+    BuilderComponent, PCComponent,
+    DataDexComponent, DexModalFormComponent,
+    DynamicFormComponent, DRFQuestionComponent,
+    NoContentComponent,
     FilterBarComponent, NavBarComponent
   ],
   imports: [ // import Angular's modules
@@ -73,6 +87,9 @@ type StoreType = {
   providers: [ // expose our Services and Providers into Angular's dependency injection
     ENV_PROVIDERS,
     APP_PROVIDERS
+  ],
+  entryComponents: [
+    DexModalFormComponent
   ]
 })
 export class AppModule {

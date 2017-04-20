@@ -7,7 +7,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   `],
   template: `
     <div class="input-group col-xs-12">
-      <button class="capitalize col-xs-3 btn btn-primary" type="button">
+      <button
+        class="capitalize col-xs-3 btn btn-primary"
+        type="button"
+        (click)="clickHandler()"
+      >
         {{ buttonName }}
       </button>
       <span class="col-xs-1"></span>
@@ -24,4 +28,8 @@ export class FilterBarComponent {
   @Input() public buttonName: string;
   @Output() public buttonClick = new EventEmitter();
   @Output() public filterClick = new EventEmitter();
+
+  public clickHandler() {
+    this.buttonClick.next();
+  }
 };

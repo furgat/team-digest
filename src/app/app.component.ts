@@ -25,20 +25,22 @@ import 'rxjs/add/operator/mergeMap';
   ],
   template: `
     <div
-      class="top-container no-margin no-padding container col-xs-12"
+      class="top-container container-fluid"
       [ngStyle]="{'border-top': activeBorder}"
     >
+      <div class="row">
 
-      <div class="nav col-xs-1 col-s-2 no-margin no-padding">
-        <img src="{{ logo }}" alt="{{ name }}" />
-        <nav-bar (selected)="changeColor(onNavClick($event))">
-        </nav-bar>
+        <div class="col-sm-1 no-padding">
+          <img src="{{ logo }}" alt="{{ name }}" />
+          <nav-bar (selected)="changeColor(onNavClick($event))">
+          </nav-bar>
+        </div>
+
+        <main class="main col-sm-11 no-padding">
+          <router-outlet></router-outlet>
+        </main>
+
       </div>
-
-      <main class="main col-xs-11 col-s-10">
-        <router-outlet></router-outlet>
-      </main>
-
     </div>
 
     <footer>

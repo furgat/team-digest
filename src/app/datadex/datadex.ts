@@ -1,6 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppState } from '../app.service';
 import { FilterBarComponent, DynamicFormComponent } from '../common/ui';
+import { STATS, TYPES } from '../common/constants';
+
+import { DexModalFormComponent } from './forms';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+
+import 'rxjs/Rx';
+
+// dataDex type declarations
+export type Ability = {
+  id: number,
+  name: string,
+  description: string
+};
+
+export type Move = {
+  id: number,
+  name: string,
+  type: number,
+  description: string
+};
+
+export type Pokemon = {
+  id: number,
+  name: string,
+  types: number[],
+  abilityList: Ability[],
+  moveList: Move[],
+  baseStats: number[]
+};
 
 @Component({
   selector: 'data-dex',
@@ -62,27 +91,38 @@ import { FilterBarComponent, DynamicFormComponent } from '../common/ui';
     </div>
   `
 })
-export class DataDexComponent implements OnInit {
+export class DataDexComponent implements OnInit, OnDestroy {
   public dexData = [];
-  private _appState: AppState;
+  private _modalRef: any;
+  private _modalSub: any; // subscription
 
-  constructor(appState: AppState) {
-    this._appState = appState;
-  }
+  constructor(
+    private appState: AppState,
+    private modalService: NgbModal
+  ) {}
 
   public ngOnInit() {
     this._getAppState();
   }
 
-  public onButtonClick() {
-    console.log('onButtonClick()');
+  public ngOnDestroy() {
+    this._modalSub.unsubscribe();
+  }
+
+  public onButtonClick(event: string) {
+    this._modalRef = this.modalService.open(DexModalFormComponent);
+    this._modalRef.componentInstance.setForm(event);
+    this._modalSub = this._modalRef.componentInstance.formData.subscribe(
+      (data) => { console.log('Subscription: ' + data); },
+      (err) => { console.log(err); }
+    );
   }
 
   public onFilterClick() {
     console.log('onFilterClick()');
   }
 
-  private _getAppState(state: AppState = this._appState) {
+  private _getAppState(state: AppState = this.appState) {
     const data: any = state.get('datadex');
     for (let key in data) {
       if (data.hasOwnProperty(key)) {

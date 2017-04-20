@@ -15,16 +15,17 @@ import { Component, Output, EventEmitter } from '@angular/core';
       border-bottom: 1px solid #333;
       color: #CDCDCD;
       background-color: #444;
-      padding-top: 0.5em;
-      padding-bottom: 0.5em;
+      padding: 0.5em 0;
       margin: 0;
       border-radius: 0px;
+      text-align: center;
     }
 
     .linkContainer:hover {
       cursor: pointer;
       background-color: #555;
       border-top: 1px solid #666;
+      text-decoration: none;
     }
 
     .linkContainer > span { margin: 0; padding: 0; }
@@ -36,32 +37,32 @@ import { Component, Output, EventEmitter } from '@angular/core';
 
   `],
   template: `
-    <nav>
+    <nav class="container">
       <a
-        class="linkContainer container col-xs-12 builder"
+        class="linkContainer builder col-xs-12"
         [routerLink]="['builder']"
         routerLinkActive="activeLink"
         (click)="onClick('builder')"
       >
-        <span class="col-xs-12 fa fa-bar-chart fa-3x"></span>
+        <span class="fa fa-bar-chart fa-3x col-xs-12"></span>
         <span class="col-xs-12">Builder</span>
       </a>
       <a
-        class="linkContainer container col-xs-12 pc"
+        class="linkContainer pc col-xs-12"
         [routerLink]="['pc']"
         routerLinkActive="activeLink"
         (click)="onClick('pc')"
       >
-        <span class="col-xs-12 fa fa-laptop fa-3x"></span>
-        <span class="col-xs-12">PC</span>
+        <span class="fa fa-laptop fa-3x col-xs-12"></span>
+        <span class="col-xs-12">Storage</span>
       </a>
       <a
-        class="linkContainer container col-xs-12 datadex"
+        class="linkContainer datadex col-xs-12"
         [routerLink]="['datadex']"
         routerLinkActive="activeLink"
         (click)="onClick('datadex')"
       >
-        <span class="col-xs-12 fa fa-mobile fa-3x"></span>
+        <span class="fa fa-mobile fa-3x col-xs-12"></span>
         <span class="col-xs-12">DataDEX</span>
       </a>
     </nav>
