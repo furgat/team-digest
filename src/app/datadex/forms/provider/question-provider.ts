@@ -3,7 +3,7 @@ import {
   QuestionBase, DropdownQuestion, TextboxQuestion
 } from '../../../common/ui/dynamic-form';
 
-import { TYPES } from '../../../common/constants';
+import { TERMS, TYPES } from '../../../common/constants';
 
 export type DexForm = {
   id: number,
@@ -15,18 +15,18 @@ export type DexForm = {
 export class DexFormsQuestionProvider {
   private _dexForms: DexForm[] = [
     {
-      id: 0, name: 'abilities',
+      id: 0, name: TERMS.ABILITY[1],
       questions: [
         new TextboxQuestion({
-          key: 'name',
-          label: 'Name',
+          key: TERMS.NAME[0],
+          label: TERMS.NAME[0],
           value: '',
           required: true,
           order: 0
         }),
         new TextboxQuestion({
-          key: 'description',
-          label: 'Description',
+          key: TERMS.DESCRIPTION[0],
+          label: TERMS.DESCRIPTION[0],
           value: '',
           required: true,
           order: 1
@@ -34,26 +34,27 @@ export class DexFormsQuestionProvider {
       ]
     },
     {
-      id: 1, name: 'moves',
+      id: 1, name: TERMS.MOVES[1],
       questions: [
         new TextboxQuestion({
-          key: 'name',
-          label: 'Name',
+          key: TERMS.NAME[0],
+          label: TERMS.NAME[0],
           value: '',
           required: true,
           order: 0
         }),
         new DropdownQuestion({
-          key: 'type',
-          label: 'Type',
+          key: TERMS.TYPE[0],
+          label: TERMS.TYPE[0],
           options: TYPES.map((type) => {
             return {key: type, value: type};
           }),
+          required: true,
           order: 1
         }),
         new TextboxQuestion({
-          key: 'description',
-          label: 'Description',
+          key: TERMS.DESCRIPTION[0],
+          label: TERMS.DESCRIPTION[0],
           value: '',
           required: true,
           order: 2
@@ -61,7 +62,7 @@ export class DexFormsQuestionProvider {
       ]
     },
     {
-      id: 2, name: 'pokemon',
+      id: 2, name: TERMS.POKEMON[1],
       questions: []
     }
   ];

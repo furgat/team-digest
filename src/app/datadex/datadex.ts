@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppState } from '../app.service';
 import { FilterBarComponent, DynamicFormComponent } from '../common/ui';
-import { STATS, TYPES } from '../common/constants';
+import { STATS, TYPES, TERMS } from '../common/constants';
 
 import { DexModalFormComponent } from './forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-
-import 'rxjs/Rx';
 
 // dataDex type declarations
 export type Ability = {
@@ -25,9 +23,9 @@ export type Move = {
 export type Pokemon = {
   id: number,
   name: string,
-  types: number[],
-  abilityList: Ability[],
-  moveList: Move[],
+  types: number[], // Type Reference IDs
+  abilityList: number[], // Ability Reference IDs
+  moveList: number[], // Move Reference IDs
   baseStats: number[]
 };
 
@@ -106,13 +104,19 @@ export class DataDexComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._modalSub.unsubscribe();
+    if (this._modalSub) {
+      this._modalSub.unsubscribe();
+    }
   }
 
-  public onButtonClick(event: string) {
-    this._modalRef = this.modalService.open(DexModalFormComponent);
-    this._modalRef.componentInstance.setForm(event);
-    this._modalSub = this._modalRef.componentInstance.formData.subscribe(
+  public onButtonClick(
+    event: string,
+    modalRef = this._modalRef,
+    modalService = this.modalService
+  ) {
+    modalRef = modalService.open(DexModalFormComponent);
+    modalRef.componentInstance.setForm(event);
+    this._modalSub = modalRef.componentInstance.formData.subscribe(
       (data) => { console.log('Subscription: ' + data); },
       (err) => { console.log(err); }
     );
@@ -122,8 +126,44 @@ export class DataDexComponent implements OnInit, OnDestroy {
     console.log('onFilterClick()');
   }
 
+  public getObjectById(
+    from: string,
+    needle: number,
+    data = this.dexData
+  ): Object {
+    if (from && needle) {
+      const haystack = data[from];
+
+      for (let member of haystack) {
+        if (member.id === needle) {
+          return member;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  public getObjectByName(
+    from: string,
+    needle: string,
+    data = this.dexData
+  ): Object {
+    if (from && needle) {
+      const haystack = data[from];
+
+      for (let member of haystack) {
+        if (member.name === needle) {
+          return member;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
   private _getAppState(state: AppState = this.appState) {
-    const data: any = state.get('datadex');
+    const data: any = state.get(TERMS.DATADEX);
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
         this.dexData.push({name: key, data: data[key]});

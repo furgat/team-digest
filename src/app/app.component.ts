@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { AppState } from './app.service';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { TERMS } from './common/constants';
 import { NavBarComponent } from './common/ui';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -63,7 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
-    console.log('Initial App State', this.appState.state);
+    // console.log('Initial App State', this.appState.state);
     this._subscription = this.router.events
       .filter((event) => event instanceof NavigationEnd)
       .subscribe((event) => {
@@ -79,9 +80,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public onNavClick(value: string) {
     switch (value) {
-      case 'pc':
+      case TERMS.STORAGE[0]:
         return this.borderColors[1];
-      case 'datadex':
+      case TERMS.DATADEX[1]:
         return this.borderColors[2];
       default:
         return this.borderColors[0];

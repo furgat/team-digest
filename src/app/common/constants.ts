@@ -3,6 +3,34 @@ export const TEAM_KEY = 'td-team-storage';
 export const PC_KEY = 'td-pc-storage';
 export const DEX_KEY = 'td-dex-storage';
 
+// interface terms exposed here
+// TERM[0] is the singular form
+// TERM[1] is the plural/alternate form if any
+export const TERMS = {
+  // navigation elements
+  BUILDER: ['builder'],
+  STORAGE: ['storage'],
+  DATADEX: ['datadex'],
+
+  // pokemon related terms
+  ABILITY: ['ability', 'abilities'],
+  NATURE: ['nature', 'natures'],
+  TYPE: ['type', 'types'],
+  MOVE: ['move', 'moves'],
+  POKEMON: ['pokemon', 'pokemon'],
+
+  // form field names
+  NAME: ['name', 'names'],
+  DESCRIPTION: ['description', 'descriptions'],
+
+  // mathcup rankings
+  EASYPREY: ['easy prey'],
+  ADVANTAGE: ['advantage'],
+  NEUTRAL: ['neutral'],
+  DISADVANTAGE: ['disadvantage'],
+  ABORT: ['abort mission']
+};
+
 // pokemon data enums
 export const STATS = {
   HP: 'HP',

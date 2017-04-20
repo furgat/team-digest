@@ -1,6 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
 import { TDStorageProvider } from './common/provider';
 
+import { TERMS } from './common/constants';
+
 export type InternalStateType = {
   [key: string]: any
 };
@@ -10,21 +12,10 @@ export class AppState implements OnInit {
 
   // initial state is empty
   public _state: InternalStateType;
-
-  private DEFAULT_STATE = {
-    teams: [],
-    pc: [],
-    datadex: {
-      pokemon: [],
-      moves: [],
-      abilities: []
-    }
-  };
-
   private _tdStorage: TDStorageProvider;
 
   constructor(tdStorage: TDStorageProvider) {
-    this._state = this.DEFAULT_STATE;
+    this._state = this._getDefaultState();
     this._tdStorage = tdStorage;
   }
 
@@ -91,9 +82,23 @@ export class AppState implements OnInit {
       if (data !== '{}') {
         return JSON.parse(data);
       } else {
-        return this.DEFAULT_STATE;
+        return this._getDefaultState();
       }
     }
-    return this.DEFAULT_STATE;
+    return this._getDefaultState();
+  }
+
+  // factory to generate initial state with constant terms
+  private _getDefaultState() {
+    let state: InternalStateType = {};
+
+    state[TERMS.BUILDER[0]] = [];
+    state[TERMS.STORAGE[0]] = [];
+    state[TERMS.DATADEX[0]] = {};
+    state[TERMS.DATADEX[0]][TERMS.POKEMON[1]] = [];
+    state[TERMS.DATADEX[0]][TERMS.MOVE[1]] = [];
+    state[TERMS.DATADEX[0]][TERMS.ABILITY[1]] = [];
+
+    return state;
   }
 };
