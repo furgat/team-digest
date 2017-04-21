@@ -93,6 +93,7 @@ export class DataDexComponent implements OnInit, OnDestroy {
   public dexData = [];
   private _modalRef: any;
   private _modalSub: any; // subscription
+  private _stateSub: any;
 
   constructor(
     private appState: AppState,
@@ -100,6 +101,7 @@ export class DataDexComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit() {
+    this.appState.changes.subscribe(() => this._getAppState());
     this._getAppState();
   }
 
@@ -107,17 +109,25 @@ export class DataDexComponent implements OnInit, OnDestroy {
     if (this._modalSub) {
       this._modalSub.unsubscribe();
     }
+
+    if (this._stateSub) {
+      this._stateSub.unsubscribe();
+    }
   }
 
   public onButtonClick(
     event: string,
     modalRef = this._modalRef,
-    modalService = this.modalService
+    modalService = this.modalService,
   ) {
     modalRef = modalService.open(DexModalFormComponent);
     modalRef.componentInstance.setForm(event);
     this._modalSub = modalRef.componentInstance.formData.subscribe(
-      (data) => { console.log('Subscription: ' + data); },
+      (res) => {
+        let {name, data} = JSON.parse(res);
+
+
+      },
       (err) => { console.log(err); }
     );
   }
@@ -164,10 +174,14 @@ export class DataDexComponent implements OnInit, OnDestroy {
 
   private _getAppState(state: AppState = this.appState) {
     const data: any = state.get(TERMS.DATADEX);
+    let clone = [];
+
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
-        this.dexData.push({name: key, data: data[key]});
+        clone.push({name: key, data: data[key]});
       }
     }
+
+    this.dexData = clone;
   }
 };

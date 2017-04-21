@@ -34,7 +34,7 @@ export class DexFormsQuestionProvider {
       ]
     },
     {
-      id: 1, name: TERMS.MOVES[1],
+      id: 1, name: TERMS.MOVE[1],
       questions: [
         new TextboxQuestion({
           key: TERMS.NAME[0],

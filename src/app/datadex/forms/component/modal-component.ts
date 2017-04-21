@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { DynamicFormComponent } from '../../../common/ui';
+import { QuestionBase, DynamicFormComponent } from '../../../common/ui';
 import { DexFormsQuestionProvider } from '../provider';
 
 @Component({
@@ -30,7 +30,7 @@ import { DexFormsQuestionProvider } from '../provider';
   `
 })
 export class DexModalFormComponent {
-  public questions: any[];
+  public questions: Array<QuestionBase<any>>;
   @Input() public name: string;
   @Output() public formData = new EventEmitter();
 
@@ -39,12 +39,16 @@ export class DexModalFormComponent {
     private questionProvider: DexFormsQuestionProvider
   ) {}
 
-  public setForm(id: string) {
-    this.questions = this.questionProvider.getFormByName(id);
+  public setForm(
+    id: string,
+    questionProvider = this.questionProvider
+  ) {
+    this.name = id;
+    this.questions = questionProvider.getFormByName(id);
   }
 
-  public submitHandler(data) {
-    this.formData.next(data);
+  public submitHandler(data, name = this.name) {
+    this.formData.next(JSON.stringify({name, data}));
     this.activeModal.dismiss('Submitted');
   }
 }

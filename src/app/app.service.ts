@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, Output, EventEmitter } from '@angular/core';
 import { TDStorageProvider } from './common/provider';
 
 import { TERMS } from './common/constants';
@@ -12,6 +12,7 @@ export class AppState implements OnInit {
 
   // initial state is empty
   public _state: InternalStateType;
+  @Output() public changes = new EventEmitter();
   private _tdStorage: TDStorageProvider;
 
   constructor(tdStorage: TDStorageProvider) {
@@ -47,14 +48,18 @@ export class AppState implements OnInit {
   public set(
     prop: string,
     value: any,
-    save: boolean = true,
-    storage: TDStorageProvider = this._tdStorage
+    save: boolean = true
   ) {
+    this._state[prop] = value;
+    this._saveAndEmit(save, 'changed');
+  }
+
+  private _saveAndEmit(save: boolean, emit: string) {
     if (save) {
       this._save(this.state());
     }
-    // internally mutate our state
-    return this._state[prop] = value;
+
+    this.changes.next(emit);
   }
 
   private _clone(object: InternalStateType) {
