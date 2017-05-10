@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AppState } from '../app.service';
 import { FilterBarComponent, DynamicFormComponent } from '../common/ui';
-import { STATS, TYPES, TERMS } from '../common/constants';
+import { STATS, TYPES, TERMS, SAVE } from '../common/constants';
 
 import { DexModalFormComponent } from './forms';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -52,22 +52,22 @@ export type Pokemon = {
   template: `
     <div class="container">
       <ngb-tabset class="col-xs-12">
-        <ngb-tab *ngFor="let category of dexData">
+        <ngb-tab *ngFor="let category of dexData | myValues">
           <template ngbTabTitle>
-            {{ category.name }}
+            {{ category.key }}
           </template>
           <template ngbTabContent>
             <div class="container col-xs-12">
               <span class="col-xs-10 col-xs-offset-1">
                 <filter-bar
-                  buttonName="new {{ category.name }}"
-                  (buttonClick)="onButtonClick(category.name)"
+                  buttonName="new {{ category.key }}"
+                  (buttonClick)="onButtonClick(category.key)"
                   (filterClick)="onFilterClick($event)"
                 >
                 </filter-bar>
               </span>
               <span class="nothing col-xs-12" *ngIf="category.data.length <= 0">
-                You haven't added any {{category.name}} yet.
+                You haven't added any {{ category.key }} yet.
               </span>
               <ngb-accordion [closeOthers]="true">
                 <ngb-panel
@@ -90,10 +90,11 @@ export type Pokemon = {
   `
 })
 export class DataDexComponent implements OnInit, OnDestroy {
-  public dexData = [];
-  private _modalRef: any;
+  public dexData = {};
+
+  private _modalRef: any; // modal window reference
   private _modalSub: any; // subscription
-  private _stateSub: any;
+  private _stateSub: any; // subscription
 
   constructor(
     private appState: AppState,
@@ -115,18 +116,14 @@ export class DataDexComponent implements OnInit, OnDestroy {
     }
   }
 
-  public onButtonClick(
-    event: string,
-    modalRef = this._modalRef,
-    modalService = this.modalService,
-  ) {
-    modalRef = modalService.open(DexModalFormComponent);
-    modalRef.componentInstance.setForm(event);
-    this._modalSub = modalRef.componentInstance.formData.subscribe(
+  public onButtonClick(event: string) {
+    this._modalRef = this.modalService.open(DexModalFormComponent);
+    this._modalRef.componentInstance.setForm(event);
+    this._modalSub = this._modalRef.componentInstance.formData.subscribe(
       (res) => {
         let {name, data} = JSON.parse(res);
 
-
+        this.appState.add(name, JSON.parse(data), SAVE);
       },
       (err) => { console.log(err); }
     );
@@ -138,11 +135,10 @@ export class DataDexComponent implements OnInit, OnDestroy {
 
   public getObjectById(
     from: string,
-    needle: number,
-    data = this.dexData
+    needle: number
   ): Object {
     if (from && needle) {
-      const haystack = data[from];
+      const haystack = this.dexData[from];
 
       for (let member of haystack) {
         if (member.id === needle) {
@@ -157,10 +153,9 @@ export class DataDexComponent implements OnInit, OnDestroy {
   public getObjectByName(
     from: string,
     needle: string,
-    data = this.dexData
   ): Object {
     if (from && needle) {
-      const haystack = data[from];
+      const haystack = this.dexData[from];
 
       for (let member of haystack) {
         if (member.name === needle) {
@@ -172,13 +167,17 @@ export class DataDexComponent implements OnInit, OnDestroy {
     return undefined;
   }
 
-  private _getAppState(state: AppState = this.appState) {
-    const data: any = state.get(TERMS.DATADEX);
-    let clone = [];
+  private _getAppState(keysToLoad: string[] = [
+    TERMS.POKEMON[1], TERMS.MOVE[1], TERMS.ABILITY[1]
+  ]) {
+    let clone = {};
 
-    for (let key in data) {
-      if (data.hasOwnProperty(key)) {
-        clone.push({name: key, data: data[key]});
+    for (let key in keysToLoad) {
+      if (keysToLoad[key]) {
+        let data = this.appState.get(keysToLoad[key]);
+        if (data) {
+          clone[keysToLoad[key]] = data;
+        }
       }
     }
 

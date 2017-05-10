@@ -103,3 +103,5 @@ export const MATCHUP_GRID = [
   [N, R, R, R, N, S, N, N, N, N, N, N, S, N, N, N, R, S], // steel
   [N, R, N, N, N, N, S, R, N, N, N, N, N, N, S, S, R, N]  // fairy
 ];
+
+export const SAVE = false;

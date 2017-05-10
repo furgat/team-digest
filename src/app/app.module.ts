@@ -36,6 +36,8 @@ import {
   QuestionControlProvider
 } from './common/ui';
 
+import { ValuesPipe } from './common/pipes';
+
 import { BuilderComponent } from './builder';
 
 import { PCComponent } from './pc';
@@ -75,7 +77,8 @@ type StoreType = {
     DataDexComponent, DexModalFormComponent,
     DynamicFormComponent, DRFQuestionComponent,
     NoContentComponent,
-    FilterBarComponent, NavBarComponent
+    FilterBarComponent, NavBarComponent,
+    ValuesPipe
   ],
   imports: [ // import Angular's modules
     BrowserModule,

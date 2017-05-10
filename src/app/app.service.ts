@@ -4,7 +4,7 @@ import { TDStorageProvider } from './common/provider';
 import { TERMS } from './common/constants';
 
 export type InternalStateType = {
-  [key: string]: any
+  [key: string]: Object[]
 };
 
 @Injectable()
@@ -54,6 +54,17 @@ export class AppState implements OnInit {
     this._saveAndEmit(save, 'changed');
   }
 
+  public add(
+    prop: string,
+    value: Object,
+    save: boolean = true
+  ) {
+    let copy = value;
+    copy['id'] = this._state[prop].length;
+    this._state[prop].push(copy);
+    this._saveAndEmit(save, 'changed');
+  }
+
   private _saveAndEmit(save: boolean, emit: string) {
     if (save) {
       this._save(this.state());
@@ -99,10 +110,9 @@ export class AppState implements OnInit {
 
     state[TERMS.BUILDER[0]] = [];
     state[TERMS.STORAGE[0]] = [];
-    state[TERMS.DATADEX[0]] = {};
-    state[TERMS.DATADEX[0]][TERMS.POKEMON[1]] = [];
-    state[TERMS.DATADEX[0]][TERMS.MOVE[1]] = [];
-    state[TERMS.DATADEX[0]][TERMS.ABILITY[1]] = [];
+    state[TERMS.POKEMON[1]] = [];
+    state[TERMS.MOVE[1]] = [];
+    state[TERMS.ABILITY[1]] = [];
 
     return state;
   }
